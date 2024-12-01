@@ -11,7 +11,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { addTask } from "../Redux/thunks";
+import { addTask, editTask } from "../Redux/thunks";
 
 const style = {
   position: "absolute",
@@ -31,11 +31,12 @@ const style = {
 export default function TaskModal({
   title,
   id,
-  summary = "",
-  description = "",
-  priority = "None",
-  dueDate = "",
+  summary,
+  description,
+  priority,
+  dueDate,
   createdAt,
+  edit,
 }) {
   const dispatch = useDispatch();
 
@@ -60,6 +61,7 @@ export default function TaskModal({
     setOpen(false);
   };
   const handleChange = (event) => {
+    if (!edit) return;
     setFormData({
       ...formData,
       update: true,
@@ -75,12 +77,23 @@ export default function TaskModal({
       alert("Please fill in the required fields");
       return;
     }
-    dispatch(
-      addTask({
-        ...formData,
-        createdAt: createdAt.toISOString(),
-      }),
-    );
+    if (edit && id !== 0) {
+      dispatch(
+        editTask({
+          ...formData,
+          createdAt: createdAt,
+          id: id,
+        }),
+      );
+    } else
+      dispatch(
+        addTask({
+          ...formData,
+          createdAt: new Date().getTime(),
+          id: id ? id : new Date().getTime(),
+        }),
+      );
+
     setOpen(false);
   };
   const handleCancel = () => {
@@ -103,6 +116,7 @@ export default function TaskModal({
             variant="outlined"
             onChange={handleChange}
             name="summary"
+            value={formData.summary}
           />
           <TextField
             id="description"
@@ -112,6 +126,7 @@ export default function TaskModal({
             rows={4}
             onChange={handleChange}
             name="description"
+            value={formData.description}
           />
 
           <FormControl fullWidth variant="outlined">
@@ -123,7 +138,7 @@ export default function TaskModal({
               label="Priority"
               name="priority"
             >
-              <MenuItem value="None">None</MenuItem>
+              <MenuItem value="None" disabled></MenuItem>
               <MenuItem value="low">Low</MenuItem>
               <MenuItem value="medium">Medium</MenuItem>
               <MenuItem value="high">High</MenuItem>

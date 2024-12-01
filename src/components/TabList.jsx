@@ -31,24 +31,40 @@ function TabList({ list }) {
       {list.map((item, index) => {
         return (
           <List key={index}>
+            {console.log(item)}
             <ListItem>
               <ListItemText primary={item?.summary} />
               <ListItemText primary={item?.priority} />
               <ListItemText primary={item?.createdAt} />
               <ListItemText primary={item?.dueDate} />
-              <ListItemButton>
-                <ListItemIcon>
-                  <EditIcon onClick={() => handleAction("edit", index)} />
-                </ListItemIcon>
-                <ListItemIcon>
-                  <DeleteIcon onClick={() => handleAction("delete", index)} />
-                </ListItemIcon>
-                <ListItemIcon>
-                  <RemoveRedEyeIcon
-                    onClick={() => handleAction("read", index)}
-                  />
-                </ListItemIcon>
-              </ListItemButton>
+              <TaskModal
+                title={<EditIcon />}
+                id={item?.id}
+                summary={item?.summary}
+                description={item?.description}
+                priority={item?.priority}
+                dueDate={item?.dueDate}
+                createdAt={item?.createdAt}
+                edit={true}
+              />
+              <TaskModal
+                title={<DeleteIcon />}
+                id={item?.id}
+                summary={item?.summary}
+                description={item?.description}
+                priority={item?.priority}
+                dueDate={item?.dueDate}
+                createdAt={item?.createdAt}
+              />{" "}
+              <TaskModal
+                title={<RemoveRedEyeIcon />}
+                id={item?.id}
+                summary={item?.summary}
+                description={item?.description}
+                priority={item?.priority}
+                dueDate={item?.dueDate}
+                createdAt={item?.createdAt}
+              />
             </ListItem>
           </List>
         );

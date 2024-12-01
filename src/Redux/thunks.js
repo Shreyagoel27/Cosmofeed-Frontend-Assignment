@@ -37,12 +37,10 @@ export const deleteTask = () => {
   };
 };
 
-export const editTask = () => {
+export const editTask = (data) => {
   return async (dispatch) => {
     dispatch(editTaskRequest());
     try {
-      const response = await fetch("https://api.example.com/data");
-      const data = await response.json();
       dispatch(editTaskSuccess(data));
     } catch (error) {
       dispatch(editTaskFailure(error.message));

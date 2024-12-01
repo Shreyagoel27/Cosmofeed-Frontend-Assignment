@@ -6,11 +6,20 @@ import { useDispatch, useSelector } from "react-redux";
 function App() {
   const dispatch = useDispatch();
   const taskList = useSelector((state) => state.taskList);
-  console.log(taskList);
+
   return (
     <div>
       <TabList list={taskList} />
-      <TaskModal title="+" id={0} createdAt={new Date()} />
+      <TaskModal
+        title="+"
+        id={0}
+        createdAt={new Date()}
+        edit={true}
+        summary={""}
+        description={""}
+        priority={"None"}
+        dueDate={""}
+      />
     </div>
   );
 }
