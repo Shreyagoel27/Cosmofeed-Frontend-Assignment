@@ -1,12 +1,17 @@
 import {
   ADD_TASK_REQUEST,
   ADD_TASK,
-  EDIT_TASK,
   DELETE_TASK,
   DELETE_TASK_REQUEST,
   EDIT_TASK_REQUEST,
-  EDIT_TASK_LIST_REQUEST,
-  EDIT_TASK_LIST,
+  EDIT_TASK,
+  EDIT_TASK_FAILURE,
+  GLOBAL_SEARCH_REQUEST,
+  GLOBAL_SEARCH,
+  GLOBAL_SEARCH_FAILURE,
+  SORT_TASK_LIST_REQUEST,
+  SORT_TASK_LIST,
+  SORT_TASK_LIST_FAILURE,
 } from "./actions/actionTypes";
 const initialState = {
   taskList: [
@@ -86,15 +91,36 @@ const rootReducer = (state = initialState, action) => {
         taskList: state.taskList.filter((task) => task.id !== action.payload),
         loading: false,
       };
-    case EDIT_TASK_LIST_REQUEST:
+    case GLOBAL_SEARCH_REQUEST:
       return {
         ...state,
         loading: true,
       };
-    case EDIT_TASK_LIST:
+    case GLOBAL_SEARCH:
       return {
         ...state,
-        globalSearchList: [...action?.payload],
+        globalSearchList: action?.payload,
+        loading: false,
+      };
+    case GLOBAL_SEARCH_FAILURE:
+      return {
+        ...state,
+        loading: false,
+      };
+    case SORT_TASK_LIST_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case SORT_TASK_LIST:
+      return {
+        ...state,
+        taskList: action?.payload,
+        loading: false,
+      };
+    case SORT_TASK_LIST_FAILURE:
+      return {
+        ...state,
         loading: false,
       };
     default:

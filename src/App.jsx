@@ -4,7 +4,7 @@ import TabList from "./components/TabList";
 import { useDispatch, useSelector } from "react-redux";
 import { TextField } from "@mui/material";
 import { globalSearch } from "./utils";
-import { editTaskList } from "./Redux/thunks";
+import { searchTask } from "./Redux/thunks";
 import "./App.css";
 function App() {
   const dispatch = useDispatch();
@@ -37,7 +37,7 @@ function App() {
   useEffect(() => {
     if (searchQuery.length) {
       const data = globalSearch(taskList, searchQuery);
-      dispatch(editTaskList(data));
+      dispatch(searchTask(data));
     }
   }, [taskList]);
 
@@ -50,8 +50,8 @@ function App() {
       setTimeout(() => {
         console.log("hi");
         const data = globalSearch(taskList, e.target.value);
-        dispatch(editTaskList(data));
-      }, 500),
+        dispatch(searchTask(data));
+      }, 300),
     );
   };
 

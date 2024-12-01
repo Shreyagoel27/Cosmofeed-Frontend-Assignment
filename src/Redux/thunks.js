@@ -8,9 +8,12 @@ import {
   editTaskRequest,
   editTaskSuccess,
   editTaskFailure,
-  editTaskListRequest,
-  editTaskListSuccess,
-  editTaskListFailure,
+  globalSearchRequest,
+  globalSearchSuccess,
+  globalSearchFailure,
+  sortTaskListRequest,
+  sortTaskListSuccess,
+  sortTaskListFailure,
 } from "./actions/actions";
 
 export const addTask = (data) => {
@@ -46,13 +49,24 @@ export const editTask = (data) => {
   };
 };
 
-export const editTaskList = (data) => {
+export const searchTask = (data) => {
   return async (dispatch) => {
-    dispatch(editTaskListRequest());
+    dispatch(globalSearchRequest());
     try {
-      dispatch(editTaskListSuccess(data));
+      dispatch(globalSearchSuccess(data));
     } catch (error) {
-      dispatch(editTaskListFailure(error.message));
+      dispatch(globalSearchFailure(error.message));
+    }
+  };
+};
+
+export const sortTaskList = (data) => {
+  return async (dispatch) => {
+    dispatch(sortTaskListRequest());
+    try {
+      dispatch(sortTaskListSuccess(data));
+    } catch (error) {
+      dispatch(sortTaskListFailure(error.message));
     }
   };
 };

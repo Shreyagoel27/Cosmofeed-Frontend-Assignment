@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import TaskModal from "./Modals";
-import { deleteTask, editTask } from "../Redux/thunks";
-import { Box, IconButton, Typography, Tooltip } from "@mui/material";
+import { deleteTask, editTask, sortTaskList } from "../Redux/thunks";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Grid from "@mui/material/Grid2";
-import Paper from "@mui/material/Paper";
+import { sortData } from "../utils";
 
 function TabList({ list }) {
+  const [sorting, setSorting] = useState({ field: null, order: "asc" });
   const dispatch = useDispatch();
 
   const handleDelete = (id) => {
@@ -20,6 +21,18 @@ function TabList({ list }) {
 
   const handleTaskStatus = (id, status) => {
     dispatch(editTask({ id, pending: status }));
+  };
+
+  const handleSort = (field) => {
+    let newOrder = "asc";
+    if (sorting.field === field && sorting.order === "asc") {
+      newOrder = "desc";
+    }
+
+    setSorting({ field, order: newOrder });
+
+    const sortedData = sortData(list, field, newOrder);
+    dispatch(sortTaskList(sortedData));
   };
 
   return (
@@ -39,19 +52,41 @@ function TabList({ list }) {
           size={{ xs: 12, md: 12 }}
           sx={{ backgroundColor: "#ccc" }}
         >
-          <Grid size={{ xs: 2 }} sx={{ border: "1px solid #ccc" }}>
+          <Grid
+            size={{ xs: 2 }}
+            sx={{ border: "1px solid #ccc" }}
+            onClick={() => {
+              handleSort("summary");
+            }}
+          >
             Summary
           </Grid>
-          <Grid size={{ xs: 2 }} sx={{ border: "1px solid #ccc" }}>
+          <Grid
+            size={{ xs: 2 }}
+            sx={{ border: "1px solid #ccc" }}
+            onClick={() => handleSort("dueDate")}
+          >
             Due Date
           </Grid>
-          <Grid size={{ xs: 2 }} sx={{ border: "1px solid #ccc" }}>
+          <Grid
+            size={{ xs: 2 }}
+            sx={{ border: "1px solid #ccc" }}
+            onClick={() => handleSort("priority")}
+          >
             Priority
           </Grid>
-          <Grid size={{ xs: 2 }} sx={{ border: "1px solid #ccc" }}>
+          <Grid
+            size={{ xs: 2 }}
+            sx={{ border: "1px solid #ccc" }}
+            onClick={() => handleSort("createdAt")}
+          >
             Created At
           </Grid>
-          <Grid size={{ xs: 2 }} sx={{ border: "1px solid #ccc" }}>
+          <Grid
+            size={{ xs: 2 }}
+            sx={{ border: "1px solid #ccc" }}
+            onClick={() => handleSort("actions")}
+          >
             Actions
           </Grid>
         </Grid>

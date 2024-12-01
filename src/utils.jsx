@@ -1,13 +1,10 @@
 export const globalSearch = (data, query) => {
-  console.log("Input Data:", data);
-  console.log("Query:", query);
-
   if (!query) {
     return [];
   }
 
   const regex = new RegExp(query, "gi"); // Case-insensitive search
-  const x = data.map((item) => {
+  return data.map((item) => {
     const matchedTitle = item.summary?.replace(
       regex,
       (match) => `<mark>${match}</mark>`,
@@ -34,7 +31,24 @@ export const globalSearch = (data, query) => {
       createdAt: matchedCreatedAt,
     };
   });
+};
 
-  console.log("Processed Data (x):", x);
-  return x;
+export const sortData = (data, field, order) => {
+  if (!field) {
+    return data;
+  }
+
+  const sortedData = [...data];
+  console.log("Sorted Data:", sortedData);
+  sortedData.sort((a, b) => {
+    if (a[field] < b[field]) {
+      return order === "asc" ? -1 : 1;
+    }
+    if (a[field] > b[field]) {
+      return order === "asc" ? 1 : -1;
+    }
+    return 0;
+  });
+
+  return sortedData;
 };
