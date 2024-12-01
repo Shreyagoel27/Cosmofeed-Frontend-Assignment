@@ -12,6 +12,9 @@ import {
   SORT_TASK_LIST_REQUEST,
   SORT_TASK_LIST,
   SORT_TASK_LIST_FAILURE,
+  GROUP_TASK_LIST_REQUEST,
+  GROUP_TASK_LIST,
+  GROUP_TASK_LIST_FAILURE,
 } from "./actions/actionTypes";
 const initialState = {
   taskList: [
@@ -44,6 +47,7 @@ const initialState = {
     },
   ],
   globalSearchList: [],
+  groupByList: [],
   loading: false,
 };
 
@@ -119,6 +123,22 @@ const rootReducer = (state = initialState, action) => {
         loading: false,
       };
     case SORT_TASK_LIST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+      };
+    case GROUP_TASK_LIST_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case GROUP_TASK_LIST:
+      return {
+        ...state,
+        groupByList: action?.payload,
+        loading: false,
+      };
+    case GROUP_TASK_LIST_FAILURE:
       return {
         ...state,
         loading: false,
