@@ -1,9 +1,9 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
+import React, { useState, useCallback } from "react";
 import {
+  Box,
+  Button,
+  Typography,
+  Modal,
   FormControl,
   InputLabel,
   MenuItem,
@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { addTask, editTask } from "../Redux/thunks";
+import { Pending } from "@mui/icons-material";
 
 const style = {
   position: "absolute",
@@ -28,46 +29,42 @@ const style = {
   p: 4,
 };
 
-export default function TaskModal({
-  title,
-  id,
-  summary,
-  description,
-  priority,
-  dueDate,
-  createdAt,
-  edit,
-}) {
+const TaskModal = ({
+  title = "Open Modal",
+  id = 0,
+  summary = "",
+  description = "",
+  priority = "None",
+  dueDate = "",
+  createdAt = new Date().getTime(),
+  edit = false,
+}) => {
   const dispatch = useDispatch();
 
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-
-  const inputProps = {
-    step: 300,
-  };
-  const [formData, setFormData] = React.useState({
-    summary: summary,
-    description: description,
-    priority: priority,
-    dueDate: dueDate,
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState(() => ({
+    summary,
+    description,
+    priority,
+    dueDate,
     update: false,
-  });
-  const handleClose = () => {
-    if (formData?.update) {
+  }));
+
+  const handleOpen = useCallback(() => setOpen(true), []);
+  const handleClose = useCallback(() => {
+    if (formData.update) {
       alert("Changes saved");
       return;
     }
     setOpen(false);
-  };
+  }, [formData]);
+
   const handleChange = (event) => {
     if (!edit) return;
-    setFormData({
-      ...formData,
-      update: true,
-      [event.target.name]: event.target.value,
-    });
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, update: true, [name]: value }));
   };
+
   const handleSave = () => {
     if (
       formData.summary.length < 1 ||
@@ -83,6 +80,7 @@ export default function TaskModal({
           ...formData,
           createdAt: createdAt,
           id: id,
+          pending: true,
         }),
       );
     } else
@@ -91,14 +89,27 @@ export default function TaskModal({
           ...formData,
           createdAt: new Date().getTime(),
           id: id ? id : new Date().getTime(),
+          pending: true,
         }),
       );
+    handleReset();
+    setOpen(false);
+  };
 
-    setOpen(false);
-  };
   const handleCancel = () => {
+    handleReset();
     setOpen(false);
   };
+
+  const handleReset = useCallback(() => {
+    setFormData({
+      summary: "",
+      description: "",
+      priority: "None",
+      dueDate: "",
+      update: false,
+    });
+  }, []);
 
   return (
     <div>
@@ -128,23 +139,21 @@ export default function TaskModal({
             name="description"
             value={formData.description}
           />
-
           <FormControl fullWidth variant="outlined">
             <InputLabel id="priority-select-label">Priority</InputLabel>
             <Select
               labelId="priority-select-label"
-              value={formData?.priority}
+              value={formData.priority}
               onChange={handleChange}
               label="Priority"
               name="priority"
             >
-              <MenuItem value="None" disabled></MenuItem>
+              <MenuItem value="None">None</MenuItem>
               <MenuItem value="low">Low</MenuItem>
               <MenuItem value="medium">Medium</MenuItem>
               <MenuItem value="high">High</MenuItem>
             </Select>
           </FormControl>
-
           <TextField
             id="due-date"
             label="Due Date"
@@ -154,11 +163,10 @@ export default function TaskModal({
             onChange={handleChange}
             name="dueDate"
             InputLabelProps={{
-              shrink: true, // Ensures the label doesn't overlap with the value
+              shrink: true,
             }}
           />
-
-          <Box style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
             <Button onClick={handleCancel} variant="outlined">
               Cancel
             </Button>
@@ -170,4 +178,6 @@ export default function TaskModal({
       </Modal>
     </div>
   );
-}
+};
+
+export default TaskModal;

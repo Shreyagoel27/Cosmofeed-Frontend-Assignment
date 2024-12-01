@@ -6,32 +6,27 @@ import ListItemText from "@mui/material/ListItemText";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-
 import React from "react";
 import TaskModal from "./Modals";
-
+import { useDispatch } from "react-redux";
+import { deleteTask, editTask } from "../Redux/thunks";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 function TabList({ list }) {
-  const handleAction = (action, id) => {
-    switch (action) {
-      case "edit":
-        return <TaskModal title="Edit" id={id} />;
-        break;
-      case "delete":
-        alert("Deleting " + id);
-        break;
-      case "read":
-        alert("Reading " + id);
-        break;
-      default:
-        break;
-    }
+  const dispatch = useDispatch();
+
+  const handleDelete = (id) => {
+    dispatch(deleteTask(id));
+  };
+
+  const hanndleTaskStatus = (id, status) => {
+    dispatch(editTask({ id: id, pending: status }));
   };
   return (
     <div>
       {list.map((item, index) => {
         return (
           <List key={index}>
-            {console.log(item)}
             <ListItem>
               <ListItemText primary={item?.summary} />
               <ListItemText primary={item?.priority} />
@@ -47,15 +42,7 @@ function TabList({ list }) {
                 createdAt={item?.createdAt}
                 edit={true}
               />
-              <TaskModal
-                title={<DeleteIcon />}
-                id={item?.id}
-                summary={item?.summary}
-                description={item?.description}
-                priority={item?.priority}
-                dueDate={item?.dueDate}
-                createdAt={item?.createdAt}
-              />{" "}
+              <DeleteIcon onClick={() => handleDelete(item?.id)} />
               <TaskModal
                 title={<RemoveRedEyeIcon />}
                 id={item?.id}
@@ -65,6 +52,15 @@ function TabList({ list }) {
                 dueDate={item?.dueDate}
                 createdAt={item?.createdAt}
               />
+              {!item?.pending ? (
+                <CheckCircleIcon
+                  onClick={() => hanndleTaskStatus(item?.id, true)}
+                />
+              ) : (
+                <RadioButtonUncheckedIcon
+                  onClick={() => hanndleTaskStatus(item?.id, false)}
+                />
+              )}
             </ListItem>
           </List>
         );

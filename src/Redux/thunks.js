@@ -24,13 +24,11 @@ export const addTask = (data) => {
   };
 };
 
-export const deleteTask = () => {
+export const deleteTask = (id) => {
   return async (dispatch) => {
     dispatch(deleteTaskRequest());
     try {
-      const response = await fetch("https://api.example.com/data");
-      const data = await response.json();
-      dispatch(deleteTaskSuccess(data));
+      dispatch(deleteTaskSuccess(id));
     } catch (error) {
       dispatch(deleteTaskFailure(error.message));
     }

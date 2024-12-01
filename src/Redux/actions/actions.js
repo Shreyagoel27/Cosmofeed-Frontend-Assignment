@@ -4,6 +4,10 @@ import {
   DELETE_TASK,
   EDIT_TASK,
   FETCH_TASKS,
+  EDIT_TASK_REQUEST,
+  EDIT_TASK_FAILURE,
+  DELETE_TASK_REQUEST,
+  DELETE_TASK_FAILURE,
 } from "./actionTypes";
 
 export const addTaskRequest = () => ({
@@ -16,12 +20,12 @@ export const addTaskSuccess = (data) => ({
 });
 
 export const addTaskFailure = (error) => ({
-  type: ADD_TASK,
+  type: ADD_TASK_FALIURE,
   payload: error,
 });
 
 export const deleteTaskRequest = () => ({
-  type: DELETE_TASK,
+  type: DELETE_TASK_REQUEST,
 });
 
 export const deleteTaskSuccess = (data) => ({
@@ -30,12 +34,12 @@ export const deleteTaskSuccess = (data) => ({
 });
 
 export const deleteTaskFailure = (error) => ({
-  type: DELETE_TASK,
+  type: DELETE_TASK_FAILURE,
   payload: error,
 });
 
 export const editTaskRequest = () => ({
-  type: EDIT_TASK,
+  type: EDIT_TASK_REQUEST,
 });
 
 export const editTaskSuccess = (data) => ({
@@ -44,7 +48,7 @@ export const editTaskSuccess = (data) => ({
 });
 
 export const editTaskFailure = (error) => ({
-  type: EDIT_TASK,
+  type: EDIT_TASK_FAILURE,
   payload: error,
 });
 
