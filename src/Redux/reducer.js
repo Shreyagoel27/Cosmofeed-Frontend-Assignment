@@ -1,15 +1,22 @@
+import { ADD_TASK_REQUEST, ADD_TASK } from "./actions/actionTypes";
 const initialState = {
   taskList: [],
+  loading: false,
 };
 
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "FETCH_DATA_REQUEST":
-      return { ...state, isLoading: true, error: null };
-    case "FETCH_DATA_SUCCESS":
-      return { ...state, data: action.payload, isLoading: false };
-    case "FETCH_DATA_FAILURE":
-      return { ...state, error: action.payload, isLoading: false };
+    case ADD_TASK_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case ADD_TASK:
+      return {
+        ...state,
+        taskList: [...state.taskList, action.payload],
+        loading: false,
+      };
     default:
       return state;
   }

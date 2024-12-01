@@ -32,10 +32,10 @@ function TabList({ list }) {
         return (
           <List key={index}>
             <ListItem>
-              <ListItemText primary={item.title} />
-              <ListItemText primary={item.priority} />
-              <ListItemText primary={item.createdAt.toString()} />
-              <ListItemText primary={item.dueDate.toString()} />
+              <ListItemText primary={item?.summary} />
+              <ListItemText primary={item?.priority} />
+              <ListItemText primary={item?.createdAt} />
+              <ListItemText primary={item?.dueDate} />
               <ListItemButton>
                 <ListItemIcon>
                   <EditIcon onClick={() => handleAction("edit", index)} />

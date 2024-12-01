@@ -1,57 +1,63 @@
-import { ADD_TASK, DELETE_TASK, EDIT_TASK, FETCH_TASKS } from "./actionTypes";
+import {
+  ADD_TASK_REQUEST,
+  ADD_TASK,
+  DELETE_TASK,
+  EDIT_TASK,
+  FETCH_TASKS,
+} from "./actionTypes";
 
-export const AddTaskRequest = () => ({
-  type: ADD_TASK,
+export const addTaskRequest = () => ({
+  type: ADD_TASK_REQUEST,
 });
 
-export const AddTaskSuccess = (data) => ({
+export const addTaskSuccess = (data) => ({
   type: ADD_TASK,
   payload: data,
 });
 
-export const AddTaskFailure = (error) => ({
+export const addTaskFailure = (error) => ({
   type: ADD_TASK,
   payload: error,
 });
 
-export const DeleteTaskRequest = () => ({
+export const deleteTaskRequest = () => ({
   type: DELETE_TASK,
 });
 
-export const DeleteTaskSuccess = (data) => ({
+export const deleteTaskSuccess = (data) => ({
   type: DELETE_TASK,
   payload: data,
 });
 
-export const DeleteTaskFailure = (error) => ({
+export const deleteTaskFailure = (error) => ({
   type: DELETE_TASK,
   payload: error,
 });
 
-export const EditTaskRequest = () => ({
+export const editTaskRequest = () => ({
   type: EDIT_TASK,
 });
 
-export const EditTaskSuccess = (data) => ({
+export const editTaskSuccess = (data) => ({
   type: EDIT_TASK,
   payload: data,
 });
 
-export const EditTaskFailure = (error) => ({
+export const editTaskFailure = (error) => ({
   type: EDIT_TASK,
   payload: error,
 });
 
-export const FetchTasksRequest = () => ({
+export const fetchTasksRequest = () => ({
   type: FETCH_TASKS,
 });
 
-export const FetchTasksSuccess = (data) => ({
+export const fetchTasksSuccess = (data) => ({
   type: FETCH_TASKS,
   payload: data,
 });
 
-export const FetchTasksFailure = (error) => ({
+export const fetchTasksFailure = (error) => ({
   type: FETCH_TASKS,
   payload: error,
 });

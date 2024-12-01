@@ -10,6 +10,8 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { addTask } from "../Redux/thunks";
 
 const style = {
   position: "absolute",
@@ -35,6 +37,8 @@ export default function TaskModal({
   dueDate = "",
   createdAt,
 }) {
+  const dispatch = useDispatch();
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
 
@@ -56,33 +60,33 @@ export default function TaskModal({
     setOpen(false);
   };
   const handleChange = (event) => {
-    console.log(event.target.value);
     setFormData({
       ...formData,
       update: true,
       [event.target.name]: event.target.value,
     });
   };
-
   const handleSave = () => {
     if (
-      formData.summary.length < 10 ||
+      formData.summary.length < 1 ||
       formData.description.length < 10 ||
       formData.dueDate.length < 10
     ) {
       alert("Please fill in the required fields");
       return;
     }
-    console.log({
-      ...formData,
-      createdAt: createdAt,
-      id: id ? id : new Date().getTime(),
-    });
+    dispatch(
+      addTask({
+        ...formData,
+        createdAt: createdAt.toISOString(),
+      }),
+    );
     setOpen(false);
   };
   const handleCancel = () => {
     setOpen(false);
   };
+
   return (
     <div>
       <Button onClick={handleOpen}>{title}</Button>

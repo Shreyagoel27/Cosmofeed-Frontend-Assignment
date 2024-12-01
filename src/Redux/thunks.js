@@ -11,14 +11,12 @@ import {
   fetchTasksRequest,
   fetchTasksSuccess,
   fetchTasksFailure,
-} from "./actions";
+} from "./actions/actions";
 
-export const addTask = () => {
+export const addTask = (data) => {
   return async (dispatch) => {
     dispatch(addTaskRequest());
     try {
-      const response = await fetch("https://api.example.com/data");
-      const data = await response.json();
       dispatch(addTaskSuccess(data));
     } catch (error) {
       dispatch(addTaskFailure(error.message));

@@ -1,34 +1,15 @@
 import React, { useState } from "react";
 import TaskModal from "./components/Modals";
 import TabList from "./components/TabList";
+import { useDispatch, useSelector } from "react-redux";
 
 function App() {
-  const [list, setList] = useState([
-    {
-      title: "Task 1",
-      description: "This is a task",
-      createdAt: new Date(),
-      dueDate: new Date(),
-      priority: "High",
-    },
-    {
-      title: "Task 2",
-      description: "This is a task",
-      createdAt: new Date(),
-      dueDate: new Date(),
-      priority: "Medium",
-    },
-    {
-      title: "Task 3",
-      description: "This is a task",
-      createdAt: new Date(),
-      dueDate: new Date(),
-      priority: "Low",
-    },
-  ]);
+  const dispatch = useDispatch();
+  const taskList = useSelector((state) => state.taskList);
+  console.log(taskList);
   return (
     <div>
-      <TabList list={list} />
+      <TabList list={taskList} />
       <TaskModal title="+" id={0} createdAt={new Date()} />
     </div>
   );
