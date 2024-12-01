@@ -8,9 +8,9 @@ import {
   editTaskRequest,
   editTaskSuccess,
   editTaskFailure,
-  fetchTasksRequest,
-  fetchTasksSuccess,
-  fetchTasksFailure,
+  editTaskListRequest,
+  editTaskListSuccess,
+  editTaskListFailure,
 } from "./actions/actions";
 
 export const addTask = (data) => {
@@ -46,15 +46,13 @@ export const editTask = (data) => {
   };
 };
 
-export const fetchTasks = () => {
+export const editTaskList = (data) => {
   return async (dispatch) => {
-    dispatch(fetchTasksRequest());
+    dispatch(editTaskListRequest());
     try {
-      const response = await fetch("https://api.example.com/data");
-      const data = await response.json();
-      dispatch(fetchTasksSuccess(data));
+      dispatch(editTaskListSuccess(data));
     } catch (error) {
-      dispatch(fetchTasksFailure(error.message));
+      dispatch(editTaskListFailure(error.message));
     }
   };
 };

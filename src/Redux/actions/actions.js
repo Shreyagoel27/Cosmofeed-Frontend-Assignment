@@ -3,11 +3,13 @@ import {
   ADD_TASK,
   DELETE_TASK,
   EDIT_TASK,
-  FETCH_TASKS,
   EDIT_TASK_REQUEST,
   EDIT_TASK_FAILURE,
   DELETE_TASK_REQUEST,
   DELETE_TASK_FAILURE,
+  EDIT_TASK_LIST_REQUEST,
+  EDIT_TASK_LIST,
+  EDIT_TASK_LIST_FAILURE,
 } from "./actionTypes";
 
 export const addTaskRequest = () => ({
@@ -52,16 +54,16 @@ export const editTaskFailure = (error) => ({
   payload: error,
 });
 
-export const fetchTasksRequest = () => ({
-  type: FETCH_TASKS,
+export const editTaskListRequest = () => ({
+  type: EDIT_TASK_LIST_REQUEST,
 });
 
-export const fetchTasksSuccess = (data) => ({
-  type: FETCH_TASKS,
+export const editTaskListSuccess = (data) => ({
+  type: EDIT_TASK_LIST,
   payload: data,
 });
 
-export const fetchTasksFailure = (error) => ({
-  type: FETCH_TASKS,
+export const editTaskListFailure = (error) => ({
+  type: EDIT_TASK_LIST_FAILURE,
   payload: error,
 });

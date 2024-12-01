@@ -87,8 +87,8 @@ const TaskModal = ({
       dispatch(
         addTask({
           ...formData,
-          createdAt: new Date().getTime(),
-          id: id ? id : new Date().getTime(),
+          createdAt: new Date().getTime().toString(),
+          id: id ? id : new Date().getTime().toString(),
           pending: true,
         }),
       );
