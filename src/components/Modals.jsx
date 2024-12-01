@@ -33,10 +33,11 @@ export default function TaskModal({
   description = "",
   priority = "None",
   dueDate = "",
+  createdAt,
 }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
   const inputProps = {
     step: 300,
   };
@@ -45,11 +46,22 @@ export default function TaskModal({
     description: description,
     priority: priority,
     dueDate: dueDate,
+    update: false,
   });
-
+  const handleClose = () => {
+    if (formData?.update) {
+      alert("Changes saved");
+      return;
+    }
+    setOpen(false);
+  };
   const handleChange = (event) => {
     console.log(event.target.value);
-    setFormData({ ...formData, [event.target.name]: event.target.value });
+    setFormData({
+      ...formData,
+      update: true,
+      [event.target.name]: event.target.value,
+    });
   };
 
   const handleSave = () => {
@@ -61,7 +73,14 @@ export default function TaskModal({
       alert("Please fill in the required fields");
       return;
     }
-    console.log(formData);
+    console.log({
+      ...formData,
+      createdAt: createdAt,
+      id: id ? id : new Date().getTime(),
+    });
+    setOpen(false);
+  };
+  const handleCancel = () => {
     setOpen(false);
   };
   return (
@@ -121,7 +140,7 @@ export default function TaskModal({
           />
 
           <Box style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-            <Button onClick={handleClose} variant="outlined">
+            <Button onClick={handleCancel} variant="outlined">
               Cancel
             </Button>
             <Button onClick={handleSave} variant="contained">

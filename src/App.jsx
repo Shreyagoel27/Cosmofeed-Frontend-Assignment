@@ -5,8 +5,7 @@ function App() {
   const [list, setList] = useState([]);
   return (
     <div>
-      App
-      <TaskModal title="+" id={0} />
+      <TaskModal title="+" id={0} createdAt={new Date()} />
     </div>
   );
 }
