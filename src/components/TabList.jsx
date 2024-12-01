@@ -8,8 +8,118 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Grid from "@mui/material/Grid2";
 import { sortData } from "../utils";
+import Grid from "@mui/material/Grid2";
+// Header component for sortable table columns
+const TableHeader = ({ headers, sorting, handleSort }) => {
+  return (
+    <Grid
+      container
+      spacing={1}
+      sx={{ backgroundColor: "#ccc" }}
+      size={{
+        xs: 12,
+      }}
+    >
+      {headers.map(({ field, label }) => (
+        <Grid
+          key={field}
+          size={{
+            xs: 2,
+          }}
+          sx={{
+            border: "1px solid #ccc",
+            cursor: "pointer",
+            textAlign: "center",
+            padding: "8px 0",
+          }}
+          onClick={() => handleSort(field)}
+        >
+          {label}{" "}
+          {sorting.field === field ? (sorting.order === "asc" ? "↑" : "↓") : ""}
+        </Grid>
+      ))}
+    </Grid>
+  );
+};
+
+// Row component for rendering task data
+const TableRow = ({ item, handleTaskStatus, handleDelete }) => {
+  return (
+    <Grid
+      container
+      spacing={2}
+      size={{
+        xs: 12,
+      }}
+      sx={{
+        alignItems: "center",
+        borderBottom: "1px solid #ccc",
+        textAlign: "center",
+        padding: "8px 0",
+      }}
+    >
+      {["summary", "dueDate", "priority", "createdAt"].map((key) => (
+        <Grid
+          key={key}
+          size={{
+            xs: 2,
+          }}
+        >
+          <Box dangerouslySetInnerHTML={{ __html: item[key] }} />
+        </Grid>
+      ))}
+      <Grid
+        size={{
+          xs: 2,
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
+          <TaskModal
+            title={
+              <Tooltip title="Edit">
+                <IconButton color="primary">
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            }
+            {...item}
+            edit
+          />
+          <TaskModal
+            title={
+              <Tooltip title="View">
+                <IconButton color="info">
+                  <RemoveRedEyeIcon />
+                </IconButton>
+              </Tooltip>
+            }
+            {...item}
+          />
+          <Tooltip
+            title={!item?.pending ? "Mark as Completed" : "Mark as Pending"}
+          >
+            <IconButton
+              color={!item?.pending ? "success" : "warning"}
+              onClick={() => handleTaskStatus(item?.id, !item?.pending)}
+            >
+              {!item?.pending ? (
+                <CheckCircleIcon />
+              ) : (
+                <RadioButtonUncheckedIcon />
+              )}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton color="error" onClick={() => handleDelete(item?.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Grid>
+    </Grid>
+  );
+};
 
 function TabList({ list }) {
   const [sorting, setSorting] = useState({ field: null, order: "asc" });
@@ -24,164 +134,40 @@ function TabList({ list }) {
   };
 
   const handleSort = (field) => {
-    let newOrder = "asc";
-    if (sorting.field === field && sorting.order === "asc") {
-      newOrder = "desc";
-    }
-
+    const newOrder =
+      sorting.field === field && sorting.order === "asc" ? "desc" : "asc";
     setSorting({ field, order: newOrder });
 
     const sortedData = sortData(list, field, newOrder);
     dispatch(sortTaskList(sortedData));
   };
 
+  const headers = [
+    { field: "summary", label: "Summary" },
+    { field: "dueDate", label: "Due Date" },
+    { field: "priority", label: "Priority" },
+    { field: "createdAt", label: "Created At" },
+    { field: "actions", label: "Actions" },
+  ];
+
   return (
     <Box sx={{ flexGrow: 1, overflow: "auto" }}>
       <Grid
         container
-        sx={{
-          alignItems: "center",
-          borderBottom: "1px solid #ccc",
-          textAlign: "center",
-          padding: "8px 0",
-        }}
+        sx={{ borderBottom: "1px solid #ccc", textAlign: "center" }}
       >
-        <Grid
-          container
-          spacing={2}
-          size={{ xs: 12, md: 12 }}
-          sx={{ backgroundColor: "#ccc" }}
-        >
-          <Grid
-            size={{ xs: 2 }}
-            sx={{ border: "1px solid #ccc" }}
-            onClick={() => {
-              handleSort("summary");
-            }}
-          >
-            Summary
-          </Grid>
-          <Grid
-            size={{ xs: 2 }}
-            sx={{ border: "1px solid #ccc" }}
-            onClick={() => handleSort("dueDate")}
-          >
-            Due Date
-          </Grid>
-          <Grid
-            size={{ xs: 2 }}
-            sx={{ border: "1px solid #ccc" }}
-            onClick={() => handleSort("priority")}
-          >
-            Priority
-          </Grid>
-          <Grid
-            size={{ xs: 2 }}
-            sx={{ border: "1px solid #ccc" }}
-            onClick={() => handleSort("createdAt")}
-          >
-            Created At
-          </Grid>
-          <Grid
-            size={{ xs: 2 }}
-            sx={{ border: "1px solid #ccc" }}
-            onClick={() => handleSort("actions")}
-          >
-            Actions
-          </Grid>
-        </Grid>
-        {list.map((item, index) => (
-          <Grid
-            container
-            size={{ xs: 12, md: 12 }}
-            key={index}
-            sx={{
-              alignItems: "center",
-              borderBottom: "1px solid #ccc",
-              textAlign: "center",
-              padding: "8px 0",
-            }}
-            spacing={2}
-          >
-            <Grid size={{ xs: 2 }}>
-              <Box dangerouslySetInnerHTML={{ __html: item?.summary }}></Box>
-            </Grid>
-
-            <Grid size={{ xs: 2 }}>
-              <Box dangerouslySetInnerHTML={{ __html: item?.dueDate }}></Box>
-            </Grid>
-
-            <Grid size={{ xs: 2 }}>
-              <Box dangerouslySetInnerHTML={{ __html: item?.priority }}></Box>
-            </Grid>
-
-            <Grid size={{ xs: 2 }}>
-              <Box dangerouslySetInnerHTML={{ __html: item?.createdAt }}></Box>
-            </Grid>
-
-            <Grid size={{ xs: 2 }}>
-              <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
-                <TaskModal
-                  title={
-                    <Tooltip title="Edit">
-                      <IconButton color="primary">
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                  }
-                  id={item?.id}
-                  summary={item?.summary}
-                  description={item?.description}
-                  priority={item?.priority}
-                  dueDate={item?.dueDate}
-                  createdAt={item?.createdAt}
-                  edit={true}
-                />
-
-                <TaskModal
-                  title={
-                    <Tooltip title="View">
-                      <IconButton color="info">
-                        <RemoveRedEyeIcon />
-                      </IconButton>
-                    </Tooltip>
-                  }
-                  id={item?.id}
-                  summary={item?.summary}
-                  description={item?.description}
-                  priority={item?.priority}
-                  dueDate={item?.dueDate}
-                  createdAt={item?.createdAt}
-                />
-
-                <Tooltip
-                  title={
-                    !item?.pending ? "Mark as Completed" : "Mark as Pending"
-                  }
-                >
-                  <IconButton
-                    color={!item?.pending ? "success" : "warning"}
-                    onClick={() => handleTaskStatus(item?.id, !item?.pending)}
-                  >
-                    {!item?.pending ? (
-                      <CheckCircleIcon />
-                    ) : (
-                      <RadioButtonUncheckedIcon />
-                    )}
-                  </IconButton>
-                </Tooltip>
-
-                <Tooltip title="Delete">
-                  <IconButton
-                    color="error"
-                    onClick={() => handleDelete(item?.id)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            </Grid>
-          </Grid>
+        <TableHeader
+          headers={headers}
+          sorting={sorting}
+          handleSort={handleSort}
+        />
+        {list.map((item) => (
+          <TableRow
+            key={item.id}
+            item={item}
+            handleTaskStatus={handleTaskStatus}
+            handleDelete={handleDelete}
+          />
         ))}
       </Grid>
     </Box>

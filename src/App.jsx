@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TaskModal from "./components/Modals";
 import TabList from "./components/TabList";
 import { useDispatch, useSelector } from "react-redux";
-import { TextField } from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 import { globalSearch } from "./utils";
 import { searchTask } from "./Redux/thunks";
 import "./App.css";
@@ -55,6 +55,8 @@ function App() {
     );
   };
 
+  const options = ["Priority", "Created On", "Pending On"];
+
   return (
     <div>
       <TextField
@@ -63,6 +65,14 @@ function App() {
         value={searchQuery}
         onChange={handleSearch}
       />
+      <Autocomplete
+        disablePortal
+        onChange={(event, value) => console.log(value)}
+        options={options}
+        sx={{ width: 300 }}
+        renderInput={(params) => <TextField {...params} label="Movie" />}
+      />
+
       <h2>All Task</h2>
       <TabList list={globalSearchList.length ? globalSearchList : taskList} />
 
