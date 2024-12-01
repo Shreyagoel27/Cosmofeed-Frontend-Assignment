@@ -84,3 +84,17 @@ export const sortTaskListFailure = (error) => ({
   type: SORT_TASK_LIST_FAILURE,
   payload: error,
 });
+
+export const groupTaskListRequest = () => ({
+  type: GROUP_TASK_LIST_REQUEST,
+});
+
+export const groupTaskListSuccess = (data) => ({
+  type: GROUP_TASK_LIST,
+  payload: data,
+});
+
+export const groupTaskListFailure = (error) => ({
+  type: GROUP_TASK_LIST_FAILURE,
+  payload: error,
+});
