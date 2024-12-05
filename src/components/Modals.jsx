@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Box,
   Button,
@@ -40,17 +40,26 @@ const TaskModal = ({
   edit = false,
 }) => {
   const dispatch = useDispatch();
-
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(() => ({
-    summary,
-    description,
-    priority,
-    dueDate,
+    summary: "",
+    description: "",
+    priority: "",
+    dueDate: "",
     update: false,
   }));
 
-  const handleOpen = useCallback(() => setOpen(true), []);
+  const handleOpen = useCallback(() => {
+    setFormData({
+      summary: summary,
+      description: description,
+      priority: priority,
+      dueDate: dueDate,
+      update: false,
+    });
+    setOpen(true);
+  }, [summary, description, priority, dueDate]);
+
   const handleClose = useCallback(() => {
     if (formData.update) {
       alert("Changes saved");
@@ -83,7 +92,7 @@ const TaskModal = ({
           pending: true,
         }),
       );
-    } else
+    } else {
       dispatch(
         addTask({
           ...formData,
@@ -92,24 +101,13 @@ const TaskModal = ({
           pending: true,
         }),
       );
-    handleReset();
+    }
     setOpen(false);
   };
 
   const handleCancel = () => {
-    handleReset();
     setOpen(false);
   };
-
-  const handleReset = useCallback(() => {
-    setFormData({
-      summary: "",
-      description: "",
-      priority: "None",
-      dueDate: "",
-      update: false,
-    });
-  }, []);
 
   return (
     <div>
@@ -162,9 +160,6 @@ const TaskModal = ({
             value={formData.dueDate}
             onChange={handleChange}
             name="dueDate"
-            InputLabelProps={{
-              shrink: true,
-            }}
           />
           <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
             <Button onClick={handleCancel} variant="outlined">

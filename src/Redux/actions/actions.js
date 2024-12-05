@@ -13,6 +13,9 @@ import {
   SORT_TASK_LIST_REQUEST,
   SORT_TASK_LIST,
   SORT_TASK_LIST_FAILURE,
+  GROUP_TASK_LIST_REQUEST,
+  GROUP_TASK_LIST,
+  GROUP_TASK_LIST_FAILURE,
 } from "./actionTypes";
 
 export const addTaskRequest = () => ({
@@ -89,9 +92,12 @@ export const groupTaskListRequest = () => ({
   type: GROUP_TASK_LIST_REQUEST,
 });
 
-export const groupTaskListSuccess = (data) => ({
+export const groupTaskListSuccess = (data, value) => ({
   type: GROUP_TASK_LIST,
-  payload: data,
+  payload: {
+    data,
+    value,
+  },
 });
 
 export const groupTaskListFailure = (error) => ({

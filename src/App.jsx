@@ -2,37 +2,62 @@ import React, { useEffect, useState } from "react";
 import TaskModal from "./components/Modals";
 import TabList from "./components/TabList";
 import { useDispatch, useSelector } from "react-redux";
-import { Autocomplete, TextField } from "@mui/material";
-import { globalSearch } from "./utils";
-import { searchTask } from "./Redux/thunks";
+import { Autocomplete, MenuItem, TextField } from "@mui/material";
+import { globalSearch, groupBy } from "./utils";
+import { groupTaskList, searchTask } from "./Redux/thunks";
 import "./App.css";
 function App() {
   const dispatch = useDispatch();
   const taskList = useSelector((state) => state.taskList);
   const globalSearchList = useSelector((state) => state.globalSearchList);
+  const groupByList = useSelector((state) => state.groupByList);
 
-  const [pendingTaskList, setPendingTaskList] = useState([]);
-  const [completedTaskList, setCompletedTaskList] = useState([]);
+  const [pendingTaskList, setPendingTaskList] = useState({});
+  const [completedTaskList, setCompletedTaskList] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTimer, setSearchTimer] = useState(null);
+  const [groupByValue, setGroupByValue] = useState("");
 
   useEffect(() => {
-    if (globalSearchList.length) {
-      setPendingTaskList(
-        globalSearchList.filter((task) => task.pending === true),
-      );
-      setCompletedTaskList(
-        globalSearchList.filter((task) => task.pending === false),
-      );
+    if (Object.entries(globalSearchList).length) {
+      const pendingTask = {};
+      const completedTask = {};
+
+      Object.keys(globalSearchList).forEach((key) => {
+        const pendingFilteredTasks = globalSearchList[key].filter(
+          (task) => task.pending === true,
+        );
+        const completedTasks = globalSearchList[key].filter(
+          (task) => task.pending === false,
+        );
+        pendingTask[key] = pendingFilteredTasks;
+        completedTask[key] = completedTasks;
+      });
+      console.log("pendingTaskList:", pendingTask);
+      setPendingTaskList(pendingTask);
+      setCompletedTaskList(completedTask);
     } else {
-      setPendingTaskList(taskList.filter((task) => task.pending === true));
-      setCompletedTaskList(taskList.filter((task) => task.pending === false));
+      const pendingTask = {};
+      const completedTask = {};
+
+      Object.keys(taskList).forEach((key) => {
+        const pendingFilteredTasks = taskList[key].filter(
+          (task) => task.pending === true,
+        );
+        const completedTasks = taskList[key].filter(
+          (task) => task.pending === false,
+        );
+        pendingTask[key] = pendingFilteredTasks;
+        completedTask[key] = completedTasks;
+      });
+      setPendingTaskList(pendingTask);
+      setCompletedTaskList(completedTask);
     }
     return () => {
       setPendingTaskList([]);
       setCompletedTaskList([]);
     };
-  }, [taskList, globalSearchList]);
+  }, [taskList, groupByList, globalSearchList]);
 
   useEffect(() => {
     if (searchQuery.length) {
@@ -48,14 +73,36 @@ function App() {
     }
     setSearchTimer(
       setTimeout(() => {
-        console.log("hi");
         const data = globalSearch(taskList, e.target.value);
         dispatch(searchTask(data));
       }, 300),
     );
   };
 
-  const options = ["Priority", "Created On", "Pending On"];
+  const options = [
+    {
+      label: "Priority",
+      value: "priority",
+    },
+    {
+      label: "Created On",
+      value: "createdAt",
+    },
+    {
+      label: "Pending On",
+      value: "dueDate",
+    },
+    {
+      label: "None",
+      value: "",
+    },
+  ];
+
+  const handleGroupBy = (event, value) => {
+    setGroupByValue(value?.value);
+    const list = groupBy(taskList, value?.value);
+    dispatch(groupTaskList(list, value?.value));
+  };
 
   return (
     <div>
@@ -67,14 +114,19 @@ function App() {
       />
       <Autocomplete
         disablePortal
-        onChange={(event, value) => console.log(value)}
+        onChange={handleGroupBy}
         options={options}
         sx={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} label="Movie" />}
+        getOptionLabel={(option) => option.label}
+        renderInput={(params) => <TextField {...params} label="Group By" />}
       />
 
       <h2>All Task</h2>
-      <TabList list={globalSearchList.length ? globalSearchList : taskList} />
+      <TabList
+        list={
+          Object.entries(globalSearchList).length ? globalSearchList : taskList
+        }
+      />
 
       <h2>Pending Task</h2>
       <TabList list={pendingTaskList} />

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import TaskModal from "./Modals";
 import { deleteTask, editTask, sortTaskList } from "../Redux/thunks";
-import { Box, IconButton, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import EditIcon from "@mui/icons-material/Edit";
@@ -45,6 +45,13 @@ const TableHeader = ({ headers, sorting, handleSort }) => {
 
 // Row component for rendering task data
 const TableRow = ({ item, handleTaskStatus, handleDelete }) => {
+  const handleStatus = () => {
+    const data = {
+      ...item,
+      pending: !item?.pending,
+    };
+    handleTaskStatus(data);
+  };
   return (
     <Grid
       container
@@ -101,7 +108,7 @@ const TableRow = ({ item, handleTaskStatus, handleDelete }) => {
           >
             <IconButton
               color={!item?.pending ? "success" : "warning"}
-              onClick={() => handleTaskStatus(item?.id, !item?.pending)}
+              onClick={handleStatus}
             >
               {!item?.pending ? (
                 <CheckCircleIcon />
@@ -129,8 +136,8 @@ function TabList({ list }) {
     dispatch(deleteTask(id));
   };
 
-  const handleTaskStatus = (id, status) => {
-    dispatch(editTask({ id, pending: status }));
+  const handleTaskStatus = (data) => {
+    dispatch(editTask(data));
   };
 
   const handleSort = (field) => {
@@ -161,14 +168,31 @@ function TabList({ list }) {
           sorting={sorting}
           handleSort={handleSort}
         />
-        {list.map((item) => (
-          <TableRow
-            key={item.id}
-            item={item}
-            handleTaskStatus={handleTaskStatus}
-            handleDelete={handleDelete}
-          />
-        ))}
+
+        {Object.keys(list).map((group) => {
+          if (list[group].length === 0) return null;
+          return (
+            <Grid
+              container
+              spacing={2}
+              size={{
+                xs: 12,
+              }}
+              key={group}
+            >
+              {group && <Typography variant="h6">{group}</Typography>}
+
+              {list[group].map((task) => (
+                <TableRow
+                  key={task.id}
+                  item={task}
+                  handleTaskStatus={handleTaskStatus}
+                  handleDelete={handleDelete}
+                />
+              ))}
+            </Grid>
+          );
+        })}
       </Grid>
     </Box>
   );

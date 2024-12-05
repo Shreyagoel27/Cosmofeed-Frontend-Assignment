@@ -1,3 +1,4 @@
+import { editTaskList } from "../utils";
 import {
   addTaskRequest,
   addTaskSuccess,
@@ -14,6 +15,9 @@ import {
   sortTaskListRequest,
   sortTaskListSuccess,
   sortTaskListFailure,
+  groupTaskListRequest,
+  groupTaskListSuccess,
+  groupTaskListFailure,
 } from "./actions/actions";
 
 export const addTask = (data) => {
@@ -53,6 +57,7 @@ export const searchTask = (data) => {
   return async (dispatch) => {
     dispatch(globalSearchRequest());
     try {
+      console.log("data:", data);
       dispatch(globalSearchSuccess(data));
     } catch (error) {
       dispatch(globalSearchFailure(error.message));
@@ -67,6 +72,17 @@ export const sortTaskList = (data) => {
       dispatch(sortTaskListSuccess(data));
     } catch (error) {
       dispatch(sortTaskListFailure(error.message));
+    }
+  };
+};
+
+export const groupTaskList = (data, value) => {
+  return async (dispatch) => {
+    dispatch(groupTaskListRequest());
+    try {
+      dispatch(groupTaskListSuccess(data, value));
+    } catch (error) {
+      dispatch(groupTaskListFailure(error.message));
     }
   };
 };

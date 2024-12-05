@@ -1,8 +1,7 @@
-export const globalSearch = (data, query) => {
+export const globalSearchArray = (data, query) => {
   if (!query) {
     return [];
   }
-
   const regex = new RegExp(query, "gi"); // Case-insensitive search
   return data.map((item) => {
     const matchedTitle = item.summary?.replace(
@@ -33,13 +32,26 @@ export const globalSearch = (data, query) => {
   });
 };
 
-export const sortData = (data, field, order) => {
+export const globalSearch = (data, query) => {
+  if (!query) {
+    return {};
+  }
+
+  const searchData = Object.keys(data).reduce((acc, key) => {
+    const filteredTasks = globalSearchArray(data[key], query);
+    acc[key] = filteredTasks;
+    return acc;
+  }, {});
+  console.log("searchData:", searchData);
+  return searchData;
+};
+
+export const sortDataArray = (data, field, order) => {
   if (!field) {
     return data;
   }
+  const sortedData = Object.values(data).flat();
 
-  const sortedData = [...data];
-  console.log("Sorted Data:", sortedData);
   sortedData.sort((a, b) => {
     if (a[field] < b[field]) {
       return order === "asc" ? -1 : 1;
@@ -51,4 +63,68 @@ export const sortData = (data, field, order) => {
   });
 
   return sortedData;
+};
+
+export const sortData = (data, field, order) => {
+  if (!field) {
+    return data;
+  }
+  const sortedData = Object.keys(data).reduce((acc, key) => {
+    const sortedList = sortDataArray(data[key], field, order);
+    acc[key] = sortedList;
+    return acc;
+  }, {});
+  return sortedData;
+};
+
+export const groupBy = (data, type) => {
+  if (!type) {
+    const groupedData = Object.values(data).flat();
+    return {
+      "": groupedData,
+    };
+  }
+  const arrayData = Object.values(data).flat();
+  console.log("Array Data:", arrayData);
+  const groupedData = arrayData.reduce((acc, item) => {
+    const key = item[type];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(item);
+    return acc;
+  }, {});
+
+  return groupedData;
+};
+
+export const editTaskList = (data, task, groupByValue) => {
+  const updatedData = Object.keys(data).reduce((acc, key) => {
+    const updatedList = data[key].map((item) => {
+      if (item.id === task?.id) {
+        return {
+          ...task,
+        };
+      }
+      return item;
+    });
+
+    // Preserve the key and the updated task list
+    acc[key] = updatedList;
+    return acc;
+  }, {});
+  if (groupByValue !== "none") {
+    const data = groupBy(updatedData, groupByValue);
+    return data;
+  }
+  return updatedData; // Return the updated object
+};
+
+export const deleteTaskList = (data, id) => {
+  const updatedData = Object.keys(data).reduce((acc, key) => {
+    const updatedList = data[key].filter((item) => item.id !== id);
+    acc[key] = updatedList;
+    return acc;
+  }, {});
+  return updatedData;
 };
