@@ -1,6 +1,7 @@
 import {
   ADD_TASK_REQUEST,
   ADD_TASK,
+  ADD_TASK_FAILURE,
   DELETE_TASK,
   EDIT_TASK,
   EDIT_TASK_REQUEST,
@@ -28,7 +29,7 @@ export const addTaskSuccess = (data) => ({
 });
 
 export const addTaskFailure = (error) => ({
-  type: ADD_TASK_FALIURE,
+  type: ADD_TASK_FAILURE,
   payload: error,
 });
 

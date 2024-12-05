@@ -1,5 +1,6 @@
 export const ADD_TASK_REQUEST = "ADD_TASK_REQUEST";
 export const ADD_TASK = "ADD_TASK";
+export const ADD_TASK_FAILURE = "ADD_TASK_FAILURE";
 
 export const DELETE_TASK_REQUEST = "DELETE_TASK_REQUEST";
 export const DELETE_TASK = "DELETE_TASK";

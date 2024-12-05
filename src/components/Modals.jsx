@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Box,
   Button,
-  Typography,
   Modal,
   FormControl,
   InputLabel,
@@ -10,9 +9,8 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addTask, editTask } from "../Redux/thunks";
-import { Pending } from "@mui/icons-material";
 
 const style = {
   position: "absolute",
@@ -48,7 +46,8 @@ const TaskModal = ({
     dueDate: "",
     update: false,
   }));
-
+  const tasklist = useSelector((state) => state.taskList);
+  const groupByValue = useSelector((state) => state.groupByValue);
   const handleOpen = useCallback(() => {
     setFormData({
       summary: summary,
@@ -94,7 +93,7 @@ const TaskModal = ({
       );
     } else {
       dispatch(
-        addTask({
+        addTask(tasklist, groupByValue, {
           ...formData,
           createdAt: new Date().getTime().toString(),
           id: id ? id : new Date().getTime().toString(),

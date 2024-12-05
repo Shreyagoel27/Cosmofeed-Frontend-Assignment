@@ -42,7 +42,6 @@ export const globalSearch = (data, query) => {
     acc[key] = filteredTasks;
     return acc;
   }, {});
-  console.log("searchData:", searchData);
   return searchData;
 };
 
@@ -95,7 +94,14 @@ export const groupBy = (data, type) => {
     return acc;
   }, {});
 
-  return groupedData;
+  const sortedSearchData = Object.keys(groupedData)
+    .sort() // Sort the keys alphabetically
+    .reduce((sortedAcc, key) => {
+      sortedAcc[key] = groupedData[key]; // Add entries to the new object in sorted order
+      return sortedAcc;
+    }, {});
+
+  return sortedSearchData;
 };
 
 export const editTaskList = (data, task, groupByValue) => {
@@ -127,4 +133,15 @@ export const deleteTaskList = (data, id) => {
     return acc;
   }, {});
   return updatedData;
+};
+
+export const addTaskList = (list, groupByVlaue, data) => {
+  try {
+    const latestList = [...Object.values(list).flat(), data];
+    const groupedData = groupBy({ "": latestList }, groupByVlaue);
+
+    return groupedData;
+  } catch (error) {
+    console.log("error:", error);
+  }
 };

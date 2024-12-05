@@ -1,4 +1,4 @@
-import { editTaskList } from "../utils";
+import { addTaskList, editTaskList } from "../utils";
 import {
   addTaskRequest,
   addTaskSuccess,
@@ -20,11 +20,13 @@ import {
   groupTaskListFailure,
 } from "./actions/actions";
 
-export const addTask = (data) => {
+export const addTask = (list, groupBy, data) => {
   return async (dispatch) => {
     dispatch(addTaskRequest());
     try {
-      dispatch(addTaskSuccess(data));
+      const latesList = addTaskList(list, groupBy, data);
+
+      dispatch(addTaskSuccess(latesList));
     } catch (error) {
       dispatch(addTaskFailure(error.message));
     }
@@ -42,7 +44,7 @@ export const deleteTask = (id) => {
   };
 };
 
-export const editTask = (data) => {
+export const editTask = (list, data) => {
   return async (dispatch) => {
     dispatch(editTaskRequest());
     try {
