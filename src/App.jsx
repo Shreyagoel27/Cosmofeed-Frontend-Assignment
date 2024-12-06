@@ -2,15 +2,21 @@ import React, { useEffect, useState } from "react";
 import TaskModal from "./components/Modals";
 import TabList from "./components/TabList";
 import { useDispatch, useSelector } from "react-redux";
-import { Autocomplete, MenuItem, TextField } from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 import { globalSearch, groupBy } from "./utils";
 import { groupTaskList, searchTask } from "./Redux/thunks";
 import "./App.css";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
   const dispatch = useDispatch();
+
   const taskList = useSelector((state) => state.taskList);
   const globalSearchList = useSelector((state) => state.globalSearchList);
   const groupByList = useSelector((state) => state.groupByList);
+  const error = useSelector((state) => state.error);
+  const loading = useSelector((state) => state.loading);
 
   const [pendingTaskList, setPendingTaskList] = useState({});
   const [completedTaskList, setCompletedTaskList] = useState({});
@@ -33,7 +39,7 @@ function App() {
         pendingTask[key] = pendingFilteredTasks;
         completedTask[key] = completedTasks;
       });
-      console.log("pendingTaskList:", pendingTask);
+
       setPendingTaskList(pendingTask);
       setCompletedTaskList(completedTask);
     } else {
@@ -104,22 +110,41 @@ function App() {
     dispatch(groupTaskList(list, value?.value));
   };
 
+  if (error) {
+    toast.error(error);
+  }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div>
-      <TextField
-        label="Search"
-        variant="outlined"
-        value={searchQuery}
-        onChange={handleSearch}
-      />
-      <Autocomplete
-        disablePortal
-        onChange={handleGroupBy}
-        options={options}
-        sx={{ width: 300 }}
-        getOptionLabel={(option) => option.label}
-        renderInput={(params) => <TextField {...params} label="Group By" />}
-      />
+      <div className="header-container">
+        <TaskModal
+          title="+"
+          id={0}
+          createdAt={new Date()}
+          edit={true}
+          summary={""}
+          description={""}
+          priority={"None"}
+          dueDate={""}
+        />
+        <TextField
+          label="Search"
+          variant="outlined"
+          value={searchQuery}
+          onChange={handleSearch}
+          sx={{ width: 300 }}
+        />
+        <Autocomplete
+          disablePortal
+          onChange={handleGroupBy}
+          options={options}
+          sx={{ width: 300 }}
+          getOptionLabel={(option) => option.label}
+          renderInput={(params) => <TextField {...params} label="Group By" />}
+        />
+      </div>
 
       <h2>All Task</h2>
       <TabList
@@ -133,16 +158,18 @@ function App() {
 
       <h2>Completed Task</h2>
       <TabList list={completedTaskList} />
-      <TaskModal
-        title="+"
-        id={0}
-        createdAt={new Date()}
-        edit={true}
-        summary={""}
-        description={""}
-        priority={"None"}
-        dueDate={""}
-      />
+      <div className="new-task-container">
+        <TaskModal
+          title="+"
+          id={0}
+          createdAt={new Date()}
+          edit={true}
+          summary={""}
+          description={""}
+          priority={"None"}
+          dueDate={""}
+        />
+      </div>
     </div>
   );
 }

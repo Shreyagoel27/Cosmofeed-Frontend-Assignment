@@ -67,10 +67,10 @@ const TaskModal = ({
     setOpen(false);
   }, [formData]);
 
-  const handleChange = (event) => {
-    if (!edit) return;
-    const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, update: true, [name]: value }));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSave = () => {
@@ -84,12 +84,16 @@ const TaskModal = ({
     }
     if (edit && id !== 0) {
       dispatch(
-        editTask({
-          ...formData,
-          createdAt: createdAt,
-          id: id,
-          pending: true,
-        }),
+        editTask(
+          tasklist,
+          {
+            ...formData,
+            createdAt: createdAt,
+            id: id,
+            pending: true,
+          },
+          groupByValue,
+        ),
       );
     } else {
       dispatch(
@@ -160,14 +164,17 @@ const TaskModal = ({
             onChange={handleChange}
             name="dueDate"
           />
-          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-            <Button onClick={handleCancel} variant="outlined">
-              Cancel
-            </Button>
-            <Button onClick={handleSave} variant="contained">
-              Save
-            </Button>
-          </Box>
+
+          {edit && (
+            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+              <Button onClick={handleCancel} variant="outlined">
+                Cancel
+              </Button>
+              <Button onClick={handleSave} variant="contained">
+                Save
+              </Button>
+            </Box>
+          )}
         </Box>
       </Modal>
     </div>

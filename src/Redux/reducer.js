@@ -16,6 +16,8 @@ import {
   GROUP_TASK_LIST_REQUEST,
   GROUP_TASK_LIST,
   GROUP_TASK_LIST_FAILURE,
+  ADD_TASK_FAILURE,
+  DELETE_TASK_FAILURE,
 } from "./actions/actionTypes";
 const initialState = {
   taskList: {
@@ -68,8 +70,9 @@ const initialState = {
     ],
   },
   globalSearchList: {},
-  groupByValue: "none",
+  groupByValue: "",
   loading: false,
+  error: null,
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -85,21 +88,27 @@ const rootReducer = (state = initialState, action) => {
         taskList: action.payload,
         loading: false,
       };
+    case ADD_TASK_FAILURE:
+      return {
+        ...state,
+        error: action.payload || "An error occurred.",
+        loading: false,
+      };
     case EDIT_TASK_REQUEST:
       return {
         ...state,
         loading: true,
       };
     case EDIT_TASK:
-      const data = editTaskList(
-        state.taskList,
-        action.payload,
-        state.groupByValue,
-      );
-
       return {
         ...state,
-        taskList: data,
+        taskList: action.payload,
+        loading: false,
+      };
+    case EDIT_TASK_FAILURE:
+      return {
+        ...state,
+        error: action.payload || "An error occurred.",
         loading: false,
       };
     case DELETE_TASK_REQUEST:
@@ -110,7 +119,13 @@ const rootReducer = (state = initialState, action) => {
     case DELETE_TASK:
       return {
         ...state,
-        taskList: deleteTaskList(state.taskList, action.payload),
+        taskList: action.payload,
+        loading: false,
+      };
+    case DELETE_TASK_FAILURE:
+      return {
+        ...state,
+        error: action.payload || "An error occurred.",
         loading: false,
       };
     case GLOBAL_SEARCH_REQUEST:
@@ -128,6 +143,7 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        error: action.payload || "An error occurred.",
       };
     case SORT_TASK_LIST_REQUEST:
       return {
@@ -144,6 +160,7 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        error: action.payload || "An error occurred.",
       };
     case GROUP_TASK_LIST_REQUEST:
       return {
@@ -161,6 +178,7 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        error: action.payload || "An error occurred.",
       };
     default:
       return state;

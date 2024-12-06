@@ -1,3 +1,20 @@
 mark {
   background-color: yellow;
 }
+
+.new-task-container {
+  /* position: absolute; */
+  right: 10%;
+  bottom: 10%;
+  background-color: rgb(221, 189, 189);
+  border-radius: 10px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: rgb(221, 189, 189);
+  border-radius: 10px;
+}

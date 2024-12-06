@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TaskModal from "./Modals";
 import { deleteTask, editTask, sortTaskList } from "../Redux/thunks";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
@@ -8,7 +8,7 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { sortData } from "../utils";
+import { ChangeDateFormat, sortData, timeStampToDate } from "../utils";
 import Grid from "@mui/material/Grid2";
 // Header component for sortable table columns
 const TableHeader = ({ headers, sorting, handleSort }) => {
@@ -35,7 +35,7 @@ const TableHeader = ({ headers, sorting, handleSort }) => {
           }}
           onClick={() => handleSort(field)}
         >
-          {label}{" "}
+          {label}
           {sorting.field === field ? (sorting.order === "asc" ? "↑" : "↓") : ""}
         </Grid>
       ))}
@@ -66,43 +66,79 @@ const TableRow = ({ item, handleTaskStatus, handleDelete }) => {
         padding: "8px 0",
       }}
     >
-      {["summary", "dueDate", "priority", "createdAt"].map((key) => (
-        <Grid
-          key={key}
-          size={{
-            xs: 2,
-          }}
-        >
-          <Box dangerouslySetInnerHTML={{ __html: item[key] }} />
-        </Grid>
-      ))}
+      {["summary", "dueDate", "priority", "createdAt"].map((key) => {
+        if (key === "createdAt") {
+          return (
+            <Grid
+              key={key}
+              size={{
+                xs: 2,
+              }}
+            >
+              <Box
+                dangerouslySetInnerHTML={{ __html: timeStampToDate(item[key]) }}
+              />
+            </Grid>
+          );
+        }
+        if (key === "dueDate") {
+          return (
+            <Grid
+              key={key}
+              size={{
+                xs: 2,
+              }}
+            >
+              <Box
+                dangerouslySetInnerHTML={{
+                  __html: ChangeDateFormat(item[key]),
+                }}
+              />
+            </Grid>
+          );
+        }
+        return (
+          <Grid
+            key={key}
+            size={{
+              xs: 2,
+            }}
+          >
+            <Box dangerouslySetInnerHTML={{ __html: item[key] }} />
+          </Grid>
+        );
+      })}
       <Grid
         size={{
           xs: 2,
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
-          <TaskModal
-            title={
-              <Tooltip title="Edit">
-                <IconButton color="primary">
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
-            }
-            {...item}
-            edit
-          />
-          <TaskModal
-            title={
-              <Tooltip title="View">
-                <IconButton color="info">
-                  <RemoveRedEyeIcon />
-                </IconButton>
-              </Tooltip>
-            }
-            {...item}
-          />
+          <Tooltip title="Edit">
+            <span>
+              <TaskModal
+                title={
+                  <IconButton color="primary">
+                    <EditIcon />
+                  </IconButton>
+                }
+                {...item}
+                edit
+              />
+            </span>
+          </Tooltip>
+          <Tooltip title="View">
+            <span>
+              <TaskModal
+                title={
+                  <IconButton color="info">
+                    <RemoveRedEyeIcon />
+                  </IconButton>
+                }
+                {...item}
+              />
+            </span>
+          </Tooltip>
           <Tooltip
             title={!item?.pending ? "Mark as Completed" : "Mark as Pending"}
           >
@@ -131,13 +167,14 @@ const TableRow = ({ item, handleTaskStatus, handleDelete }) => {
 function TabList({ list }) {
   const [sorting, setSorting] = useState({ field: null, order: "asc" });
   const dispatch = useDispatch();
-
+  const taskList = useSelector((state) => state.taskList);
+  const groupBy = useSelector((state) => state.groupBy);
   const handleDelete = (id) => {
-    dispatch(deleteTask(id));
+    dispatch(deleteTask(taskList, id));
   };
 
   const handleTaskStatus = (data) => {
-    dispatch(editTask(data));
+    dispatch(editTask(taskList, data, groupBy));
   };
 
   const handleSort = (field) => {

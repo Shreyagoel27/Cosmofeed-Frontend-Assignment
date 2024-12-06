@@ -84,7 +84,7 @@ export const groupBy = (data, type) => {
     };
   }
   const arrayData = Object.values(data).flat();
-  console.log("Array Data:", arrayData);
+
   const groupedData = arrayData.reduce((acc, item) => {
     const key = item[type];
     if (!acc[key]) {
@@ -136,12 +136,34 @@ export const deleteTaskList = (data, id) => {
 };
 
 export const addTaskList = (list, groupByVlaue, data) => {
-  try {
-    const latestList = [...Object.values(list).flat(), data];
-    const groupedData = groupBy({ "": latestList }, groupByVlaue);
+  const latestList = [...Object.values(list).flat(), data];
+  const groupedData = groupBy({ "": latestList }, groupByVlaue);
+  return groupedData;
+};
 
-    return groupedData;
-  } catch (error) {
-    console.log("error:", error);
+export const timeStampToDate = (timestamp) => {
+  if (!timestamp || isNaN(timestamp)) {
+    return null;
   }
+
+  const date = new Date(Number(timestamp)); // Create date from timestamp
+  if (isNaN(date.getTime())) {
+    return null;
+  }
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const day = String(date.getDate()).padStart(2, "0");
+
+  const formattedDate = `${day}/${month}/${year}`;
+
+  return formattedDate;
+};
+
+export const ChangeDateFormat = (timestamp) => {
+  const date = new Date(timestamp);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
 };
