@@ -77,7 +77,7 @@ export const sortData = (data, field, order) => {
 };
 
 export const groupBy = (data, type) => {
-  if (!type) {
+  if (!type?.value) {
     const groupedData = Object.values(data).flat();
     return {
       "": groupedData,
@@ -86,7 +86,7 @@ export const groupBy = (data, type) => {
   const arrayData = Object.values(data).flat();
 
   const groupedData = arrayData.reduce((acc, item) => {
-    const key = item[type];
+    const key = item[type?.value];
     if (!acc[key]) {
       acc[key] = [];
     }

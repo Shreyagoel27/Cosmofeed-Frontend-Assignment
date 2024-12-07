@@ -8,7 +8,7 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ChangeDateFormat, sortData, timeStampToDate } from "../../utils";
+import { ChangeDateFormat } from "../../utils";
 import Grid from "@mui/material/Grid2";
 import "./tablist.css";
 import DescriptionModal from "../DecisionModal/DecisionModal";
@@ -46,7 +46,7 @@ const TableHeader = ({ headers, sorting, handleSort }) => {
 };
 
 // Row component for rendering task data
-const TableRow = ({ item, handleTaskStatus, handleDelete, setDeletemodal }) => {
+const TableRow = ({ item, handleTaskStatus, handleDelete }) => {
   const handleStatus = () => {
     const data = {
       ...item,
@@ -158,7 +158,7 @@ function TabList({ list }) {
   const dispatch = useDispatch();
   const taskList = useSelector((state) => state.taskList);
   const groupBy = useSelector((state) => state.groupBy);
-  const [deletemodal, setDeletemodal] = useState(false);
+
   const handleDelete = (id) => {
     dispatch(deleteTask(taskList, id));
   };
@@ -172,8 +172,7 @@ function TabList({ list }) {
       sorting.field === field && sorting.order === "asc" ? "desc" : "asc";
     setSorting({ field, order: newOrder });
 
-    const sortedData = sortData(list, field, newOrder);
-    dispatch(sortTaskList(sortedData));
+    dispatch(sortTaskList(list, field, newOrder));
   };
 
   const headers = [
@@ -219,7 +218,6 @@ function TabList({ list }) {
                   item={task}
                   handleTaskStatus={handleTaskStatus}
                   handleDelete={handleDelete}
-                  setDeletemodal={setDeletemodal}
                 />
               ))}
             </Grid>

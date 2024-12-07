@@ -79,7 +79,7 @@ const TaskModal = ({
 
   const handleSave = () => {
     if (
-      formData.title.length < 1 ||
+      formData.title.length < 10 ||
       formData.description.length < 10 ||
       formData.dueDate.length < 10
     ) {
@@ -161,14 +161,18 @@ const TaskModal = ({
               <MenuItem value="high">High</MenuItem>
             </Select>
           </FormControl>
+
           <TextField
             id="due-date"
             label="Due Date"
             variant="outlined"
             type="date"
-            value={formData.dueDate}
+            value={formData.dueDate} // Controlled value
             onChange={handleChange}
             name="dueDate"
+            InputLabelProps={{
+              shrink: true, // Force the label to float
+            }}
           />
 
           {edit ? (

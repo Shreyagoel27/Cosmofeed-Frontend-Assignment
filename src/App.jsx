@@ -23,7 +23,10 @@ function App() {
   const [completedTaskList, setCompletedTaskList] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTimer, setSearchTimer] = useState(null);
-  const [groupByValue, setGroupByValue] = useState("");
+  const [groupByValue, setGroupByValue] = useState({
+    label: "None",
+    value: "",
+  });
   const [MenuOpen, setMenuOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("All Tasks");
 
@@ -108,9 +111,9 @@ function App() {
   ];
 
   const handleGroupBy = (event, value) => {
-    setGroupByValue(value?.value);
-    const list = groupBy(taskList, value?.value);
-    dispatch(groupTaskList(list, value?.value));
+    setGroupByValue(value);
+    const list = groupBy(taskList, value);
+    dispatch(groupTaskList(list, value));
   };
 
   const handleOpenMenu = () => {
@@ -123,7 +126,7 @@ function App() {
   if (loading) {
     return (
       <div className="loader-container">
-        <span class="loader"></span>
+        <span className="loader"></span>
       </div>
     );
   }
@@ -164,6 +167,7 @@ function App() {
             disablePortal
             onChange={handleGroupBy}
             options={options}
+            value={groupByValue}
             sx={{
               width: 300,
               "& .MuiInputLabel-root": {

@@ -1,4 +1,4 @@
-import { addTaskList, deleteTaskList, editTaskList } from "../utils";
+import { addTaskList, deleteTaskList, editTaskList, sortData } from "../utils";
 import {
   addTaskRequest,
   addTaskSuccess,
@@ -74,11 +74,12 @@ export const searchTask = (data) => {
   };
 };
 
-export const sortTaskList = (data) => {
+export const sortTaskList = (list, field, newOrder) => {
   return async (dispatch) => {
     dispatch(sortTaskListRequest());
     try {
-      dispatch(sortTaskListSuccess(data));
+      const result = sortData(list, field, newOrder);
+      dispatch(sortTaskListSuccess(result));
     } catch (error) {
       dispatch(sortTaskListFailure(error.message));
     }
