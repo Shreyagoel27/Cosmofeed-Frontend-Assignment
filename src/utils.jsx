@@ -136,7 +136,7 @@ export const deleteTaskList = (data, id) => {
 };
 
 export const addTaskList = (list, groupByVlaue, data) => {
-  const latestList = [...Object.values(list).flat(), data];
+  const latestList = [data, ...Object.values(list).flat()];
   const groupedData = groupBy({ "": latestList }, groupByVlaue);
   return groupedData;
 };

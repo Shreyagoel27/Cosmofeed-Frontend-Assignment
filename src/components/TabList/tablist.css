@@ -1,0 +1,6 @@
+.hyphenate {
+  width: auto; /* Set the desired width */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}

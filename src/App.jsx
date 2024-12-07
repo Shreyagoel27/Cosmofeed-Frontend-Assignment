@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TaskModal from "./components/Modals";
-import TabList from "./components/TabList";
+import TabList from "./components/TabList/TabList";
 import { useDispatch, useSelector } from "react-redux";
 import { Autocomplete, IconButton, TextField, Typography } from "@mui/material";
 import { globalSearch, groupBy } from "./utils";
@@ -34,10 +34,10 @@ function App() {
 
       Object.keys(globalSearchList).forEach((key) => {
         const pendingFilteredTasks = globalSearchList[key].filter(
-          (task) => task.pending === true,
+          (task) => task.currentState === true,
         );
         const completedTasks = globalSearchList[key].filter(
-          (task) => task.pending === false,
+          (task) => task.currentState === false,
         );
         pendingTask[key] = pendingFilteredTasks;
         completedTask[key] = completedTasks;
@@ -51,10 +51,10 @@ function App() {
 
       Object.keys(taskList).forEach((key) => {
         const pendingFilteredTasks = taskList[key].filter(
-          (task) => task.pending === true,
+          (task) => task.currentState === true,
         );
         const completedTasks = taskList[key].filter(
-          (task) => task.pending === false,
+          (task) => task.currentState === false,
         );
         pendingTask[key] = pendingFilteredTasks;
         completedTask[key] = completedTasks;
@@ -196,14 +196,15 @@ function App() {
 
           <div className="todo-app__new-task">
             <TaskModal
-              title="+"
+              label="+"
               id={0}
               createdAt={new Date()}
               edit={true}
-              summary={""}
+              title={""}
               description={""}
               priority={"None"}
               dueDate={""}
+              currentState={false}
             />
           </div>
         </div>
@@ -325,6 +326,7 @@ function App() {
       <div className="todo-app__tabs screen-lg">
         <div className="todo-app__tab">
           <h2 className="todo-app__tab-title">All Tasks</h2>
+
           <TabList
             list={
               Object.entries(globalSearchList).length

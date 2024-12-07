@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import TaskModal from "./Modals";
-import { deleteTask, editTask, sortTaskList } from "../Redux/thunks";
+import TaskModal from "../Modals";
+import { deleteTask, editTask, sortTaskList } from "../../Redux/thunks";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ChangeDateFormat, sortData, timeStampToDate } from "../utils";
+import { ChangeDateFormat, sortData, timeStampToDate } from "../../utils";
 import Grid from "@mui/material/Grid2";
+import "./tablist.css";
+import DescriptionModal from "../DecisionModal/DecisionModal";
 // Header component for sortable table columns
 const TableHeader = ({ headers, sorting, handleSort }) => {
   return (
@@ -44,11 +46,11 @@ const TableHeader = ({ headers, sorting, handleSort }) => {
 };
 
 // Row component for rendering task data
-const TableRow = ({ item, handleTaskStatus, handleDelete }) => {
+const TableRow = ({ item, handleTaskStatus, handleDelete, setDeletemodal }) => {
   const handleStatus = () => {
     const data = {
       ...item,
-      pending: !item?.pending,
+      currentState: !item?.currentState,
     };
     handleTaskStatus(data);
   };
@@ -66,21 +68,7 @@ const TableRow = ({ item, handleTaskStatus, handleDelete }) => {
         padding: "8px 0",
       }}
     >
-      {["summary", "dueDate", "priority", "createdAt"].map((key) => {
-        if (key === "createdAt") {
-          return (
-            <Grid
-              key={key}
-              size={{
-                xs: 2,
-              }}
-            >
-              <Box
-                dangerouslySetInnerHTML={{ __html: timeStampToDate(item[key]) }}
-              />
-            </Grid>
-          );
-        }
+      {["title", "dueDate", "priority", "createdAt"].map((key) => {
         if (key === "dueDate") {
           return (
             <Grid
@@ -104,49 +92,47 @@ const TableRow = ({ item, handleTaskStatus, handleDelete }) => {
               xs: 2,
             }}
           >
-            <Box dangerouslySetInnerHTML={{ __html: item[key] }} />
+            <Box
+              className="hyphenate"
+              dangerouslySetInnerHTML={{ __html: item[key] }}
+            />
           </Grid>
         );
       })}
       <Grid
         size={{
-          xs: 2,
+          xs: 4,
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+
+            width: "100%",
+            overflow: "hidden",
+          }}
+        >
           <Tooltip title="Edit">
             <span>
-              <TaskModal
-                title={
-                  <IconButton color="primary">
-                    <EditIcon />
-                  </IconButton>
-                }
-                {...item}
-                edit
-              />
+              <TaskModal label={<EditIcon />} {...item} edit />
             </span>
           </Tooltip>
           <Tooltip title="View">
             <span>
-              <TaskModal
-                title={
-                  <IconButton color="info">
-                    <RemoveRedEyeIcon />
-                  </IconButton>
-                }
-                {...item}
-              />
+              <TaskModal label={<RemoveRedEyeIcon />} {...item} />
             </span>
           </Tooltip>
           <Tooltip
-            title={!item?.pending ? "Mark as Completed" : "Mark as Pending"}
+            title={
+              !item?.currentState ? "Mark as Completed" : "Mark as Pending"
+            }
           >
             <IconButton
-              color={!item?.pending ? "success" : "warning"}
+              color={!item?.currentState ? "success" : "warning"}
               onClick={handleStatus}
             >
-              {!item?.pending ? (
+              {!item?.currentState ? (
                 <CheckCircleIcon />
               ) : (
                 <RadioButtonUncheckedIcon />
@@ -154,9 +140,12 @@ const TableRow = ({ item, handleTaskStatus, handleDelete }) => {
             </IconButton>
           </Tooltip>
           <Tooltip title="Delete">
-            <IconButton color="error" onClick={() => handleDelete(item?.id)}>
-              <DeleteIcon />
-            </IconButton>
+            <DescriptionModal
+              label={<DeleteIcon />}
+              question="Are you sure you want to delete?"
+              handleDelete={handleDelete}
+              id={item?.id}
+            />
           </Tooltip>
         </Box>
       </Grid>
@@ -169,6 +158,7 @@ function TabList({ list }) {
   const dispatch = useDispatch();
   const taskList = useSelector((state) => state.taskList);
   const groupBy = useSelector((state) => state.groupBy);
+  const [deletemodal, setDeletemodal] = useState(false);
   const handleDelete = (id) => {
     dispatch(deleteTask(taskList, id));
   };
@@ -187,7 +177,7 @@ function TabList({ list }) {
   };
 
   const headers = [
-    { field: "summary", label: "Summary" },
+    { field: "title", label: "Title" },
     { field: "dueDate", label: "Due Date" },
     { field: "priority", label: "Priority" },
     { field: "createdAt", label: "Created At" },
@@ -229,6 +219,7 @@ function TabList({ list }) {
                   item={task}
                   handleTaskStatus={handleTaskStatus}
                   handleDelete={handleDelete}
+                  setDeletemodal={setDeletemodal}
                 />
               ))}
             </Grid>

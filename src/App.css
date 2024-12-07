@@ -49,7 +49,7 @@ body {
 }
 
 .todo-app__tab {
-  width: 32%;
+  width: 33%;
   height: 90vh;
   overflow: scroll;
 }

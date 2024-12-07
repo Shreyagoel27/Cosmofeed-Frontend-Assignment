@@ -8,6 +8,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  IconButton,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { addTask, editTask } from "../Redux/thunks";
@@ -29,11 +30,12 @@ const style = {
 };
 
 const TaskModal = ({
-  title = "Open Modal",
+  label = "Open Modal",
   id = 0,
-  summary = "",
+  title = "",
   description = "",
   priority = "None",
+  currentState = false,
   dueDate = "",
   createdAt = new Date().getTime(),
   edit = false,
@@ -41,7 +43,7 @@ const TaskModal = ({
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(() => ({
-    summary: "",
+    title: "",
     description: "",
     priority: "",
     dueDate: "",
@@ -51,14 +53,14 @@ const TaskModal = ({
   const groupByValue = useSelector((state) => state.groupByValue);
   const handleOpen = useCallback(() => {
     setFormData({
-      summary: summary,
+      title: title,
       description: description,
       priority: priority,
       dueDate: dueDate,
       update: false,
     });
     setOpen(true);
-  }, [summary, description, priority, dueDate]);
+  }, [title, description, priority, dueDate]);
 
   const handleClose = useCallback(() => {
     if (formData.update) {
@@ -69,6 +71,7 @@ const TaskModal = ({
   }, [formData]);
 
   const handleChange = (e) => {
+    if (!edit) return;
     const { name, value } = e.target;
 
     setFormData({ ...formData, [name]: value });
@@ -76,7 +79,7 @@ const TaskModal = ({
 
   const handleSave = () => {
     if (
-      formData.summary.length < 1 ||
+      formData.title.length < 1 ||
       formData.description.length < 10 ||
       formData.dueDate.length < 10
     ) {
@@ -89,9 +92,9 @@ const TaskModal = ({
           tasklist,
           {
             ...formData,
-            createdAt: timeStampToDate(createdAt),
+            createdAt: createdAt,
             id: id,
-            pending: true,
+            currentState: currentState,
           },
           groupByValue,
         ),
@@ -102,7 +105,7 @@ const TaskModal = ({
           ...formData,
           createdAt: timeStampToDate(new Date().getTime()),
           id: id ? id : new Date().getTime().toString(),
-          pending: true,
+          currentState: true,
         }),
       );
     }
@@ -115,7 +118,9 @@ const TaskModal = ({
 
   return (
     <div>
-      <Button onClick={handleOpen}>{title}</Button>
+      <IconButton onClick={handleOpen} color="info">
+        {label}
+      </IconButton>
       <Modal
         open={open}
         onClose={handleClose}
@@ -124,12 +129,12 @@ const TaskModal = ({
       >
         <Box sx={style}>
           <TextField
-            id="summary"
-            label="Summary"
+            id="title"
+            label="Title"
             variant="outlined"
             onChange={handleChange}
-            name="summary"
-            value={formData.summary}
+            name="title"
+            value={formData.title}
           />
           <TextField
             id="description"
@@ -166,7 +171,7 @@ const TaskModal = ({
             name="dueDate"
           />
 
-          {edit && (
+          {edit ? (
             <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
               <Button onClick={handleCancel} variant="outlined">
                 Cancel
@@ -175,6 +180,21 @@ const TaskModal = ({
                 Save
               </Button>
             </Box>
+          ) : (
+            <>
+              <TextField
+                value={createdAt}
+                label="Created At"
+                variant="outlined"
+                name="createdAt"
+              />
+              <TextField
+                value={currentState ? "Pending" : "Completed"}
+                label="Current State"
+                variant="outlined"
+                name="id"
+              />
+            </>
           )}
         </Box>
       </Modal>
