@@ -5,8 +5,8 @@ import { groupTaskList, searchTask } from "./Redux/thunks";
 import "./App.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import MobileView from "./MobileView";
-import LargeScreenView from "./LargeScreenView";
+import MobileView from "./View/MobileView";
+import LargeScreenView from "./View/LargeScreenView";
 
 function App() {
   const dispatch = useDispatch();

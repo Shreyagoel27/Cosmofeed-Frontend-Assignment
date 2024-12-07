@@ -11,7 +11,6 @@ body {
 .todo-app {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   height: 100%;
 }
@@ -50,8 +49,9 @@ body {
 
 .todo-app__tab {
   width: 33%;
-  height: 90vh;
+  flex: 1;
   overflow: scroll;
+  max-height: 90vh;
 }
 .todo-app__new-task-label {
   color: #a179f3;

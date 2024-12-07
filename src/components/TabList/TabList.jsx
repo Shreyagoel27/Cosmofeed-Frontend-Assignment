@@ -48,11 +48,7 @@ const TableHeader = ({ headers, sorting, handleSort }) => {
 // Row component for rendering task data
 const TableRow = ({ item, handleTaskStatus, handleDelete }) => {
   const handleStatus = () => {
-    const data = {
-      ...item,
-      currentState: !item?.currentState,
-    };
-    handleTaskStatus(data);
+    handleTaskStatus(item?.id, !item?.currentState);
   };
   return (
     <Grid
@@ -163,8 +159,20 @@ function TabList({ list }) {
     dispatch(deleteTask(taskList, id));
   };
 
-  const handleTaskStatus = (data) => {
-    dispatch(editTask(taskList, data, groupBy));
+  const handleTaskStatus = (id, status) => {
+    const list = Object.values(taskList).flat();
+    const task = list.find((item) => item.id === id);
+
+    dispatch(
+      editTask(
+        taskList,
+        {
+          ...task,
+          currentState: status,
+        },
+        groupBy,
+      ),
+    );
   };
 
   const handleSort = (field) => {

@@ -161,6 +161,7 @@ const TaskModal = ({
             onChange={handleChange}
             name="title"
             value={formData.title}
+            required
           />
           <TextField
             id="description"
@@ -171,6 +172,7 @@ const TaskModal = ({
             onChange={handleChange}
             name="description"
             value={formData.description}
+            required
           />
           <FormControl fullWidth variant="outlined">
             <InputLabel id="priority-select-label">Priority</InputLabel>
@@ -189,6 +191,7 @@ const TaskModal = ({
           </FormControl>
 
           <TextField
+            required
             id="due-date"
             label="Due Date"
             variant="outlined"

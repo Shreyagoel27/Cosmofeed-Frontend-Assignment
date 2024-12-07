@@ -1,5 +1,5 @@
 import React from "react";
-import TabList from "./components/TabList/TabList";
+import TabList from "../components/TabList/TabList";
 import { Autocomplete, IconButton, TextField, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 

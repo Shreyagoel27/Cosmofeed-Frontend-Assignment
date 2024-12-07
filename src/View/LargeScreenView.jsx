@@ -1,7 +1,7 @@
 import React from "react";
-import TabList from "./components/TabList/TabList";
+import TabList from "../components/TabList/TabList";
 import { Autocomplete, TextField } from "@mui/material";
-import TaskModal from "./components/Modals";
+import TaskModal from "../components/Modals";
 
 function LargeScreenView({
   searchQuery,
