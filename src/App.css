@@ -53,7 +53,9 @@ body {
   height: 90vh;
   overflow: scroll;
 }
-
+.todo-app__new-task-label {
+  color: #a179f3;
+}
 .screen-md {
   display: none;
 }

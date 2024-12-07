@@ -13,6 +13,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { addTask, editTask } from "../Redux/thunks";
 import { timeStampToDate } from "../utils";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -80,12 +81,37 @@ const TaskModal = ({
   const handleSave = () => {
     if (
       formData.title.length < 10 ||
+      formData.title.length > 140 ||
       formData.description.length < 10 ||
+      formData.description.length > 500 ||
       formData.dueDate.length < 10
     ) {
-      alert("Please fill in the required fields");
+      let errorMessage = "";
+
+      switch (true) {
+        case formData.title.length < 10:
+          errorMessage = "Title must be at least 10 characters long.";
+          break;
+        case formData.title.length > 140:
+          errorMessage = "Title must not exceed 140 characters.";
+          break;
+        case formData.description.length < 10:
+          errorMessage = "Description must be at least 10 characters long.";
+          break;
+        case formData.description.length > 500:
+          errorMessage = "Description must not exceed 500 characters.";
+          break;
+        case formData.dueDate.length < 10:
+          errorMessage = "Due Date is invalid or incomplete.";
+          break;
+        default:
+          errorMessage = "Invalid input. Please check your data.";
+      }
+
+      toast.error(errorMessage);
       return;
     }
+
     if (edit && id !== 0) {
       dispatch(
         editTask(

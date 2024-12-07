@@ -4,7 +4,7 @@ export const globalSearchArray = (data, query) => {
   }
   const regex = new RegExp(query, "gi"); // Case-insensitive search
   return data.map((item) => {
-    const matchedTitle = item.summary?.replace(
+    const matchedTitle = item.title?.replace(
       regex,
       (match) => `<mark>${match}</mark>`,
     );
@@ -24,7 +24,7 @@ export const globalSearchArray = (data, query) => {
 
     return {
       ...item,
-      summary: matchedTitle,
+      title: matchedTitle,
       dueDate: matchedDueDate,
       priority: matchedPriority,
       createdAt: matchedCreatedAt,
@@ -42,6 +42,7 @@ export const globalSearch = (data, query) => {
     acc[key] = filteredTasks;
     return acc;
   }, {});
+  console.log(searchData);
   return searchData;
 };
 
