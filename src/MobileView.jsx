@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react";
-
+import React from "react";
 import TabList from "./components/TabList/TabList";
-
 import { Autocomplete, IconButton, TextField, Typography } from "@mui/material";
-
 import MenuIcon from "@mui/icons-material/Menu";
 
 function MobileView({

@@ -157,7 +157,7 @@ function TabList({ list }) {
   const [sorting, setSorting] = useState({ field: null, order: "asc" });
   const dispatch = useDispatch();
   const taskList = useSelector((state) => state.taskList);
-  const groupBy = useSelector((state) => state.groupBy);
+  const groupBy = useSelector((state) => state.groupByValue);
 
   const handleDelete = (id) => {
     dispatch(deleteTask(taskList, id));

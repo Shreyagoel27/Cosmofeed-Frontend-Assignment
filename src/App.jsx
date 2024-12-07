@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
-import TaskModal from "./components/Modals";
-import TabList from "./components/TabList/TabList";
 import { useDispatch, useSelector } from "react-redux";
-import { Autocomplete, IconButton, TextField, Typography } from "@mui/material";
 import { globalSearch, groupBy } from "./utils";
 import { groupTaskList, searchTask } from "./Redux/thunks";
 import "./App.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import MenuIcon from "@mui/icons-material/Menu";
 import MobileView from "./MobileView";
 import LargeScreenView from "./LargeScreenView";
 

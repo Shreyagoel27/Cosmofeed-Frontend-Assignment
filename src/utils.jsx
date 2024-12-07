@@ -42,7 +42,7 @@ export const globalSearch = (data, query) => {
     acc[key] = filteredTasks;
     return acc;
   }, {});
-  console.log(searchData);
+
   return searchData;
 };
 
@@ -120,6 +120,7 @@ export const editTaskList = (data, task, groupByValue) => {
     acc[key] = updatedList;
     return acc;
   }, {});
+
   if (groupByValue !== "none") {
     const data = groupBy(updatedData, groupByValue);
     return data;
