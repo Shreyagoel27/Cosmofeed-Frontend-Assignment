@@ -217,7 +217,11 @@ function TabList({ list }) {
               }}
               key={group}
             >
-              {group && <Typography variant="h6">{group}</Typography>}
+              {group && (
+                <Typography variant="h6" className="todo-app__tab-title">
+                  {group}
+                </Typography>
+              )}
 
               {list[group].map((task) => (
                 <TableRow

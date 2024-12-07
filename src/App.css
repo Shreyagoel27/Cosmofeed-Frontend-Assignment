@@ -1,20 +1,133 @@
-mark {
-  background-color: yellow;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  height: 100%;
 }
-
-.new-task-container {
-  /* position: absolute; */
-  right: 10%;
-  bottom: 10%;
-  background-color: rgb(221, 189, 189);
+#root {
+  height: 100%;
+}
+.todo-app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.todo-app__new-task {
+  background-color: #fff;
   border-radius: 10px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.header-container {
+.todo-app__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 5px 20px;
+  background-color: #a179f3;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.todo-app__controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.todo-app__tabs {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+
+.todo-app__tab {
+  width: 32%;
+  height: 90vh;
+  overflow: scroll;
+}
+
+.screen-md {
+  display: none;
+}
+
+.todo-app__tab-title {
+  font-size: 20px;
+  background-color: #49258e;
+  color: white;
+  text-align: center;
   padding: 10px;
-  background-color: rgb(221, 189, 189);
   border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px dotted #49258e;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  animation: rotation 2s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+mark {
+  background-color: yellow;
+}
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+@media screen and (max-width: 768px) {
+  .todo-app__tabs {
+    flex-direction: column;
+  }
+  .todo-app__tab {
+    width: 100%;
+  }
+  .screen-lg {
+    display: none;
+  }
+  .screen-md {
+    display: flex;
+  }
+  .todo-app__header {
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
+  }
+  .todo-app__controls {
+    flex-direction: column;
+    width: 100%;
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .open-menu {
+    display: flex;
+  }
+
+  .close-menu {
+    display: none;
+  }
 }

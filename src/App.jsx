@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import TaskModal from "./components/Modals";
 import TabList from "./components/TabList";
 import { useDispatch, useSelector } from "react-redux";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, IconButton, TextField, Typography } from "@mui/material";
 import { globalSearch, groupBy } from "./utils";
 import { groupTaskList, searchTask } from "./Redux/thunks";
 import "./App.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MenuIcon from "@mui/icons-material/Menu";
 
 function App() {
   const dispatch = useDispatch();
@@ -23,6 +24,8 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTimer, setSearchTimer] = useState(null);
   const [groupByValue, setGroupByValue] = useState("");
+  const [MenuOpen, setMenuOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("All Tasks");
 
   useEffect(() => {
     if (Object.entries(globalSearchList).length) {
@@ -110,65 +113,265 @@ function App() {
     dispatch(groupTaskList(list, value?.value));
   };
 
+  const handleOpenMenu = () => {
+    setMenuOpen(!MenuOpen);
+  };
+
   if (error) {
     toast.error(error);
   }
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loader-container">
+        <span class="loader"></span>
+      </div>
+    );
   }
   return (
-    <div>
-      <div className="header-container">
-        <TaskModal
-          title="+"
-          id={0}
-          createdAt={new Date()}
-          edit={true}
-          summary={""}
-          description={""}
-          priority={"None"}
-          dueDate={""}
-        />
-        <TextField
-          label="Search"
-          variant="outlined"
-          value={searchQuery}
-          onChange={handleSearch}
-          sx={{ width: 300 }}
-        />
-        <Autocomplete
-          disablePortal
-          onChange={handleGroupBy}
-          options={options}
-          sx={{ width: 300 }}
-          getOptionLabel={(option) => option.label}
-          renderInput={(params) => <TextField {...params} label="Group By" />}
-        />
+    <div className="todo-app">
+      <div className="todo-app__header screen-lg">
+        <h2 className="todo-app__logo">Todo App</h2>
+        <div className="todo-app__controls">
+          <TextField
+            label="Search"
+            variant="outlined"
+            value={searchQuery}
+            onChange={handleSearch}
+            sx={{
+              width: 300,
+              "& .MuiInputLabel-root": {
+                color: "white",
+              },
+              "& .MuiOutlinedInput-root": {
+                color: "white",
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "white",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white",
+                },
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "white" },
+            }}
+          />
+
+          <Autocomplete
+            disablePortal
+            onChange={handleGroupBy}
+            options={options}
+            sx={{
+              width: 300,
+              "& .MuiInputLabel-root": {
+                color: "white",
+              },
+              "& .MuiOutlinedInput-root": {
+                color: "white",
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "white",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white",
+                },
+              },
+            }}
+            getOptionLabel={(option) => option.label}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Group By"
+                InputLabelProps={{
+                  style: { color: "white" }, // Label color
+                }}
+              />
+            )}
+          />
+
+          <div className="todo-app__new-task">
+            <TaskModal
+              title="+"
+              id={0}
+              createdAt={new Date()}
+              edit={true}
+              summary={""}
+              description={""}
+              priority={"None"}
+              dueDate={""}
+            />
+          </div>
+        </div>
       </div>
 
-      <h2>All Task</h2>
-      <TabList
-        list={
-          Object.entries(globalSearchList).length ? globalSearchList : taskList
-        }
-      />
+      <div className="todo-app__header screen-md">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          <TextField
+            label="Search"
+            variant="outlined"
+            value={searchQuery}
+            onChange={handleSearch}
+            sx={{
+              width: "70%",
+              "& .MuiInputLabel-root": {
+                color: "white",
+              },
+              "& .MuiOutlinedInput-root": {
+                color: "white",
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "white",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white",
+                },
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "white" },
+            }}
+          />
+          <Autocomplete
+            disablePortal
+            onChange={handleGroupBy}
+            options={options}
+            sx={{
+              width: "30%",
+              "& .MuiInputLabel-root": {
+                color: "white",
+              },
+              "& .MuiOutlinedInput-root": {
+                color: "white",
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "white",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white",
+                },
+              },
+            }}
+            getOptionLabel={(option) => option.label}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Group By"
+                InputLabelProps={{
+                  style: { color: "white" }, // Label color
+                }}
+              />
+            )}
+          />
+          <IconButton onClick={handleOpenMenu}>
+            <MenuIcon />
+          </IconButton>
+        </div>
+        <div
+          className={`todo-app__controls ${
+            MenuOpen ? "open-menu" : "close-menu"
+          }`}
+        >
+          <Typography
+            variant="h6"
+            onClick={() => {
+              selectedOption === "All Tasks"
+                ? setSelectedOption(null)
+                : setSelectedOption("All Tasks");
+              handleOpenMenu();
+            }}
+          >
+            All Tasks
+          </Typography>
+          <Typography
+            variant="h6"
+            onClick={() => {
+              selectedOption === "Pending Tasks"
+                ? setSelectedOption(null)
+                : setSelectedOption("Pending Tasks");
+              handleOpenMenu();
+            }}
+          >
+            Pending Tasks
+          </Typography>
+          <Typography
+            variant="h6"
+            onClick={() => {
+              selectedOption === "Completed Tasks"
+                ? setSelectedOption(null)
+                : setSelectedOption("Completed Tasks");
+              handleOpenMenu();
+            }}
+          >
+            Completed Tasks
+          </Typography>
+        </div>
+      </div>
 
-      <h2>Pending Task</h2>
-      <TabList list={pendingTaskList} />
+      <div className="todo-app__tabs screen-lg">
+        <div className="todo-app__tab">
+          <h2 className="todo-app__tab-title">All Tasks</h2>
+          <TabList
+            list={
+              Object.entries(globalSearchList).length
+                ? globalSearchList
+                : taskList
+            }
+          />
+        </div>
 
-      <h2>Completed Task</h2>
-      <TabList list={completedTaskList} />
-      <div className="new-task-container">
-        <TaskModal
-          title="+"
-          id={0}
-          createdAt={new Date()}
-          edit={true}
-          summary={""}
-          description={""}
-          priority={"None"}
-          dueDate={""}
-        />
+        <div className="todo-app__tab">
+          <h2 className="todo-app__tab-title">Pending Tasks</h2>
+          <TabList list={pendingTaskList} />
+        </div>
+
+        <div className="todo-app__tab">
+          <h2 className="todo-app__tab-title">Completed Tasks</h2>
+          <TabList list={completedTaskList} />
+        </div>
+      </div>
+
+      <div className="todo-app__tabs screen-md">
+        {selectedOption === "All Tasks" && (
+          <div className="todo-app__tab">
+            <h2 className="todo-app__tab-title">All Tasks</h2>
+            <TabList
+              list={
+                Object.entries(globalSearchList).length
+                  ? globalSearchList
+                  : taskList
+              }
+            />
+          </div>
+        )}
+
+        {selectedOption === "Pending Tasks" && (
+          <div className="todo-app__tab">
+            <h2 className="todo-app__tab-title">Pending Tasks</h2>
+            <TabList list={pendingTaskList} />
+          </div>
+        )}
+
+        {selectedOption === "Completed Tasks" && (
+          <div className="todo-app__tab">
+            <h2 className="todo-app__tab-title">Completed Tasks</h2>
+            <TabList list={completedTaskList} />
+          </div>
+        )}
       </div>
     </div>
   );

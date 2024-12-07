@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { addTask, editTask } from "../Redux/thunks";
+import { timeStampToDate } from "../utils";
 
 const style = {
   position: "absolute",
@@ -88,7 +89,7 @@ const TaskModal = ({
           tasklist,
           {
             ...formData,
-            createdAt: createdAt,
+            createdAt: timeStampToDate(createdAt),
             id: id,
             pending: true,
           },
@@ -99,7 +100,7 @@ const TaskModal = ({
       dispatch(
         addTask(tasklist, groupByValue, {
           ...formData,
-          createdAt: new Date().getTime().toString(),
+          createdAt: timeStampToDate(new Date().getTime()),
           id: id ? id : new Date().getTime().toString(),
           pending: true,
         }),

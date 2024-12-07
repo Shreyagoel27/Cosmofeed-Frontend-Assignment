@@ -78,7 +78,6 @@ export const sortTaskList = (data) => {
   return async (dispatch) => {
     dispatch(sortTaskListRequest());
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       dispatch(sortTaskListSuccess(data));
     } catch (error) {
       dispatch(sortTaskListFailure(error.message));
@@ -90,7 +89,6 @@ export const groupTaskList = (data, value) => {
   return async (dispatch) => {
     dispatch(groupTaskListRequest());
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       dispatch(groupTaskListSuccess(data, value));
     } catch (error) {
       dispatch(groupTaskListFailure(error.message));
